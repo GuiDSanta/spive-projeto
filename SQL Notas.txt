@@ -1,0 +1,53 @@
+SQL
+
+Comandos:
+
+// Banco
+CREATE DATABASE nome;
+DROP DATABASE nome;
+USE nome;
+
+// Tabela
+CREATE TABLE tabela (campo TIPO MODIFICADORES, campo TIPO MODIFICADORES...);
+INSERT INTO tabela (campos) VALUES(valores),(valores)... ;
+ALTER TABLE tabela MODIFY COLUMN coluna TIPO MODIFICADORES;
+SELECT * ou campos FROM tabela;
+SELECT * ou campo FROM tabela WHERE campo condicional valor;
+DELETE FROM tabela WHERE campo condicional valor;
+UPDATE tabela SET campo = valor WHERE id = valor;
+
+Tipos de Dados:
+INT
+VARCHAR(max)
+DECIMAL(max_car,casas_decimais)
+
+Modificadores:
+AUTO_INCREMENT
+UNIQUE
+PRIMARY KEY
+FOREIGN KEY (campo_fk) REFERENCES tabela(campo)
+
+
+
+
+
+
+CREATE DATABASE spive;
+
+USE spive;
+
+CREATE TABLE usuario(id int PRIMARY KEY AUTO_INCREMENT,
+                    nome varchar(30) NOT NULL,
+                    sobrenome varchar(70) NOT NULL,
+                    email varchar(100) not null,
+                    senha varchar(60) NOT NULL,
+                    cep char(8) NOT NULL,
+                    logradouro varchar(100) NOT NULL,
+                    numero char(10) NOT NULL,
+                    cpf char(11) NOT NULL,
+                    nascimento date NOT NULL,
+                    telefone varchar(11) NOT NULL);
+                    
+select * from usuario;
+
+drop table usuario;
