@@ -39,12 +39,12 @@ USE spive;
 CREATE TABLE usuario(id int PRIMARY KEY AUTO_INCREMENT,
                     nome varchar(30) NOT NULL,
                     sobrenome varchar(70) NOT NULL,
-                    email varchar(100) not null,
+                    email varchar(100) UNIQUE not null,
                     senha varchar(60) NOT NULL,
                     cep char(8) NOT NULL,
                     logradouro varchar(100) NOT NULL,
                     numero char(10) NOT NULL,
-                    cpf char(11) NOT NULL,
+                    cpf char(11) UNIQUE NOT NULL,
                     nascimento date NOT NULL,
                     telefone varchar(11) NOT NULL);
                     
