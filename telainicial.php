@@ -311,7 +311,7 @@ include("verifySession.php");
 
         <div class="alinhar text-center mt-3">
             <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
-            <button type="submit" class="btn btn-primary">Cadastrar Novo</button>
+            <a button type="submit" class="btn btn-primary" href="cadastrarnovo.php">Cadastrar Novo</a>
         </div>
 
 

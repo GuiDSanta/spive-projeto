@@ -162,7 +162,7 @@ include("verifySession.php");
         }
 
         .card{
-            margin-left: 30px;
+            margin-left: 35px;
             text-align: center;
         }
 
@@ -255,6 +255,7 @@ include("verifySession.php");
     <br>
     <h3 class="text-center">Meus Veículos</h3>
 
+    
     <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png">
     <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
     <a href="perfil.php" class="usuario2 position-absolute top-0 start-50 translate-middle-x">Editar Perfil</a>
