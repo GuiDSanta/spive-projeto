@@ -1,19 +1,10 @@
-<?php
-$erroMsg = "";
-// Inicia a sessão
-session_start();
-if(!empty($_SESSION["erro_login"])){
-    $erroMsg = $_SESSION["erro_login"];
-}
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spive - Cadastrar Veículo</title>
+    <title>Spive</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="shortcut icon" href="img/Spive (2048 x 2048 px) (1).png">
     <style>
@@ -31,11 +22,9 @@ if(!empty($_SESSION["erro_login"])){
             /* ou italic */
         }
 
-
         .container {
             font-family: madetommy, sans-serif;
             background-color: white;
-            padding-bottom: 9vh;
         }
 
         body {
@@ -44,7 +33,7 @@ if(!empty($_SESSION["erro_login"])){
         }
 
         .LogoSpive {
-            height: 200px;
+            height: 160px;
             background-color: #16427F;
         }
 
@@ -88,47 +77,158 @@ if(!empty($_SESSION["erro_login"])){
             text-decoration: none;
         }
 
+        .esqueci {
+            margin-top: 30px;
+        }
     </style>
 </head>
 
 <body>
+
     <div class="LogoSpive">
         <div class="text-center">
             <img src="img/Spive (2048 x 2048 px) (1).png" alt="" class="" width="180px" height="180px">
         </div>
     </div>
     <main class="container">
-
-        <div class="form pb-5">
+        <div class="form p-md-3">
             <br>
-            <h5 class="text-danger"> <?php echo $erroMsg; ?></h5>
-            <h1 class="text-center mb-3 mt-5" style="font-family: madetommyM;">LOGIN</h1>
-            <form action="loginteste.php" class="text-center mb-5" method="post">
+            <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE VEÍCULO</h1>
+            <form id="meuFormulario" class="text-center" method="post" novalidate>
                 <div class="mb-3">
-                    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelpId"
-                        placeholder="Email" required />
-                </div>
-
-                <div class="mb-4">
-                    <input type="password" class="form-control" name="password" id="email" placeholder="Senha" minlength="6"
+                    <input type="text" class="form-control" name="modelo" id="modelo" minlength="3" placeholder="Modelo do Veículo"
                         required />
+                    <div class="invalid-feedback">Por favor, preencha o modelo do carro.</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">
-                    Entrar
-                </button>
-                <br><br>
-                <a href="saibamais.php" class='text-secondary fs-6 mt-0 text-decoration-underline'>Saiba mais</a>
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="placa" id="placa" minlength="3"
+                        placeholder="Placa do Veículo" required />
+                    <div class="invalid-feedback">Por favor, preencha a placa do carro.</div>
+                </div>
 
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="marca" id="marca" minlength="3"
+                        placeholder="Marca do Veículo" required />
+                    <div class="invalid-feedback">Por favor, preencha a marca do carro.</div>
+                </div>
 
+                <div class="mb-3">
+                    <input type="color" class="form-control" name="cor" id="cor" minlength="3"
+                        placeholder="Cor do Veículo" onmouseover="(this.type='text')" onclick="(this.type='color')" onblur="if(this.value == 0){
+                            (this.type='text');
+                        }" required />
+                    <div class="invalid-feedback">Por favor, preencha a cor do carro.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Próximo</button>
             </form>
-            <a href="esqueceuSenha.php" class="mt-3">Esqueci minha senha!</a>
-            <p class="">Não possui uma conta? <a href="cadastro1.php" class="esqueci">Clique aqui</a></p>
+
+            <p href="#" class="esqueci pb-5">Já possui conta?<a href="index.php">
+                    <br>Clique aqui</a></p>
+
         </div>
     </main>
 
 </body>
 <script src="js/bootstrap.min.js"></script>
+<script>
+    document.getElementById("meuFormulario").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        let formValido = true;
 
-</html> 
+        const inputs = this.querySelectorAll("input");
+        inputs.forEach((input) => input.classList.remove("is-invalid"));
 
+        const nome = document.getElementById("nome");
+        const sobrenome = document.getElementById("sobrenome");
+        const email = document.getElementById("email");
+        const confemail = document.getElementById("confemail");
+        const password = document.getElementById("password");
+        const confpassword = document.getElementById("confpassword");
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const letrasRegex = /^[A-Za-zÀ-ÿ\s]+$/;
+
+        // Valida nome
+        if (!letrasRegex.test(nome.value.trim())) {
+            nome.classList.add("is-invalid");
+            nome.nextElementSibling.textContent = "O nome deve conter apenas letras.";
+            formValido = false;
+        }
+
+        // Valida sobrenome
+        if (!letrasRegex.test(sobrenome.value.trim())) {
+            sobrenome.classList.add("is-invalid");
+            sobrenome.nextElementSibling.textContent = "O sobrenome deve conter apenas letras.";
+            formValido = false;
+        }
+
+        // Valida e-mail
+        if (!emailRegex.test(email.value.trim())) {
+            email.classList.add("is-invalid");
+            formValido = false;
+        }
+
+        // Confirmação de e-mail
+        if (confemail.value.trim() !== "") {
+            try {
+                const response = await fetch('verificar_email.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `confemail=${encodeURIComponent(confemail.value.trim())}`
+                });
+
+                const data = await response.json();
+                if (data.existe) {
+                    confemail.classList.add("is-invalid");
+                    email.classList.add("is-invalid");
+                    confemail.nextElementSibling.textContent = "O email já está em uso.";
+                    email.nextElementSibling.textContent = "";
+                    formValido = false;
+                } else {
+                    formValido = true;
+                }
+            } catch (error) {
+                console.error('Erro ao verificar o e-mail:', error);
+            }
+        } 
+        if (confemail.value.trim() !== email.value.trim()) {
+            confemail.classList.add("is-invalid");
+            confemail.nextElementSibling.textContent = "Os emails não coincidem.";
+            email.nextElementSibling.textContent = "";
+            formValido = false;
+        }
+        
+
+        // Senha
+        if (password.value.length < 6) {
+            password.classList.add("is-invalid");
+            formValido = false;
+        }
+
+        // Confirmação de senha
+        if (confpassword.value !== password.value) {
+            confpassword.classList.add("is-invalid");
+            formValido = false;
+        }
+
+        if (formValido) {
+            const dadosCadastro = {
+                nome: nome.value.trim(),
+                sobrenome: sobrenome.value.trim(),
+                email: email.value.trim(),
+                password: password.value
+            };
+
+            localStorage.setItem("dadosEtapa1", JSON.stringify(dadosCadastro));
+
+            // Redireciona para a etapa 2
+            window.location.href = "cadastro2.php";
+        }
+    });
+</script>
+
+
+
+</html>

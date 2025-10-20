@@ -37,7 +37,7 @@ include("verifySession.php");
         }
 
         .LogoSpive {
-            height: 80px;
+            height: 50px;
             background-color: #16427F;
         }
 
@@ -247,26 +247,32 @@ include("verifySession.php");
 
     </div>
 
-   
+
     </div>
     <main class="container">
 
         <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
         <h4 class="mt-3">Status Veículo</h4>
-        <hr>
-        <h5 class="mt-3">Temperatura:</h5> 
-        <hr>
-        <h5 class="mt-3">Nível de Oxigênio:</h5> 
-        <hr>
-        <h5 class="mt-3">Nível de CO2:</h5> 
-        <hr>
-        <h5 class="mt-3">Ocupantes:</h5> 
-        <br>
-
-         <div class="alinhar text-center mt-3">
-            <a button type="submit" class="btn btn-primary" href="#">Ações</a>
-            <button type="submit" class="btn btn-primary">Localização</button>
+        <div style="height: 300px; overflow-y: scroll; padding: 15px; margin-bottom: 20px;">
+            <h5 class="mt-3">Temperatura:</h5> 
+            <hr>
+            <h5 class="mt-3">Nível de Oxigênio:</h5> 
+            <hr>
+            <h5 class="mt-3">Nível de CO2:</h5> 
+            <hr>
+            <h5 class="mt-3">Ocupantes:</h5> 
+            <hr>
+            <h5 class="mt-3">Localização:</h5>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d913.5565647822999!2d-46.46046999139668!3d-23.667865331599426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e3!4m0!4m5!1s0x94ce69686cf767e1%3A0x34478f518ddbe831!2sR.%20Faustino%20Pereira%20Rito%20-%20RP1%20(Regi%C3%B5es%20de%20Planejamento)%2C%20Mau%C3%A1%20-%20SP%2C%2009310-105!3m2!1d-23.667735699999998!2d-46.459874899999996!5e0!3m2!1spt-BR!2sbr!4v1760970326869!5m2!1spt-BR!2sbr" width="320" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            
         </div>
+
+        <div class="alinhar text-center mt-3">
+            <a button type="submit" class="btn btn-primary" href="#">Ações</a>
+            
+        </div>
+
+
 
     </main>
 </body>
