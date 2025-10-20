@@ -130,7 +130,7 @@
                     <div class="invalid-feedback">As senhas não coincidem.</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">------></button>
+                <button type="submit" class="btn btn-primary">Próximo</button>
             </form>
 
             <p href="#" class="esqueci pb-5">Já possui conta?<a href="index.php">

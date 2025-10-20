@@ -256,9 +256,9 @@
                 if (data.existe) {
                     cpfElem.classList.add("is-invalid");
                     cpfElem.nextElementSibling.textContent = "O CPF já está em uso.";
-                    formValido = false;
+                    cpfValido = false;
                 } else {
-                    formValido = true;
+                    cpfValido = true;
                 }
             } catch (error) {
                 console.error('Erro ao verificar o cpf:', error);

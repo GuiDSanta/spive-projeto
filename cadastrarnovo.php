@@ -13,7 +13,7 @@ if(!empty($_SESSION["erro_login"])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spive</title>
+    <title>Spive - Cadastrar Veículo</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="shortcut icon" href="img/Spive (2048 x 2048 px) (1).png">
     <style>
@@ -44,7 +44,7 @@ if(!empty($_SESSION["erro_login"])){
         }
 
         .LogoSpive {
-            height: 160px;
+            height: 200px;
             background-color: #16427F;
         }
 

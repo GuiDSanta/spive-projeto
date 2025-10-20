@@ -160,6 +160,20 @@ include("verifySession.php");
             border: none;
             margin: 2px;
         }
+
+        .carousel-caption {
+            position: absolute;
+            right: 50%;
+            bottom: 1.25rem;
+            left: 0%;
+            padding-top: 1.25rem;
+            padding-bottom: 10rem;
+            text-align: center;
+        }
+
+        .text-shadow{
+            text-shadow: black 2px 2px 5px;
+        }
     </style>
 </head>
 
@@ -187,7 +201,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link link-dark">
+                            <a href="meusveiculos.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-car-front-fill mb-1" viewBox="0 0 16 16">
                                     <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2m10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM2.906 5.189a.51.51 0 0 0 .497.731c.91-.073 3.35-.17 4.597-.17s3.688.097 4.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 11.691 3H4.309a.5.5 0 0 0-.447.276L2.906 5.19Z" />
                                 </svg>
@@ -195,7 +209,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link link-dark">
+                            <a href="cadastrarnovo.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle mb-1" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
@@ -225,9 +239,9 @@ include("verifySession.php");
 
 
                     <div>
-                        <a class="d-flex align-items-center link-dark text-decoration-none" id="dropdownUser21" data-bs-toggle="dropdown" aria-expanded="false" type="button" href="perfil.php">
+                        <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
                             <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
-                            <strong><?php echo $_SESSION['nome_usuario']; ?></strong>
+                            <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
 
@@ -243,7 +257,7 @@ include("verifySession.php");
     </div>
 
     <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png">
-    <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
+    <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
     <a href="perfil.php" class="usuario2 position-absolute top-0 start-50 translate-middle-x">Editar Perfil</a>
     </div>
     <main class="container">
@@ -252,9 +266,47 @@ include("verifySession.php");
         <!-- Os dados para este campo virão do PHP -->
 
         <div class="card mb-3 bg-secondary bg-gradient">
+            <!-- carrossel -->
             <div class="text-center">
-                <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="carros card-img-top" alt="...">
+                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
+                            <div class="carousel-caption">
+                                <h5 class="text-shadow fs-2">Chevrolet Onix</h5>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Second slide label</h5>
+                                <p>Some representative placeholder content for the second slide.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Third slide label</h5>
+                                <p>Some representative placeholder content for the third slide.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
             </div>
+            <!-- carrossel -->
             <div class="card-body bg-light">
                 <h5 class="card-title" id="carro1">Chevrolet Ônix</h5> <!-- Os dados para este campo virão do PHP -->
                 <p class="card-text">Este é o seu carro.</p>
@@ -265,7 +317,7 @@ include("verifySession.php");
 
 
         <div class="alinhar text-center mt-3">
-            <button type="submit" class="btn btn-primary">Meus Veículos</button>
+            <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
             <button type="submit" class="btn btn-primary">Cadastrar Novo</button>
         </div>
 
@@ -274,11 +326,6 @@ include("verifySession.php");
     </main>
 </body>
 <script src="js/bootstrap.min.js"></script>
-<script>
-    setInterval(function() {
-        location.reload();
-    }, 3000); // 3000 milissegundos = 3 segundos
-</script>
 
 
 

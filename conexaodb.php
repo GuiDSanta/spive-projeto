@@ -1,6 +1,6 @@
 <?php
 
-$host = '127.0.0.1:3306'; // altera para a porta correta do seu MySQL //na maquina do lab usar 3307 //na maquina pessoal usar 3306
+$host = '127.0.0.1:3307'; // altera para a porta correta do seu MySQL //na maquina do lab usar 3307 //na maquina pessoal usar 3306
 $user = 'root';
 $password = '';
 $dbname = 'spive';

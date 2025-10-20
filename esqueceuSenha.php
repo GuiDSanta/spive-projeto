@@ -102,27 +102,25 @@ if(!empty($_SESSION["erro_login"])){
         <div class="form pb-5">
             <br>
             <h5 class="text-danger"> <?php echo $erroMsg; ?></h5>
-            <h1 class="text-center mb-3 mt-5" style="font-family: madetommyM;">LOGIN</h1>
+            <h1 class="text-center mb-3 mt-5" style="font-family: madetommyM;">Esqueceu a senha?</h1>
+            <br>
+            <br>
             <form action="loginteste.php" class="text-center mb-5" method="post">
                 <div class="mb-3">
-                    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelpId"
-                        placeholder="Email" required />
+                    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelpId" placeholder="Email" required />
                 </div>
-
-                <div class="mb-4">
-                    <input type="password" class="form-control" name="password" id="email" placeholder="Senha" minlength="6"
-                        required />
-                </div>
+                <br>
+                <br>
+                <br>
 
                 <button type="submit" class="btn btn-primary">
-                    Entrar
+                    Confirmar
                 </button>
                 <br><br>
                 <a href="saibamais.php" class='text-secondary fs-6 mt-0 text-decoration-underline'>Saiba mais</a>
 
 
             </form>
-            <a href="esqueceuSenha.php" class="mt-3">Esqueci minha senha!</a>
             <p class="">Não possui uma conta? <a href="cadastro1.php" class="esqueci">Clique aqui</a></p>
         </div>
     </main>
