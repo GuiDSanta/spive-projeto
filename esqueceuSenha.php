@@ -1,8 +1,9 @@
 <?php
+$voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php';
 $erroMsg = "";
 // Inicia a sessão
 session_start();
-if(!empty($_SESSION["erro_login"])){
+if (!empty($_SESSION["erro_login"])) {
     $erroMsg = $_SESSION["erro_login"];
 }
 ?>
@@ -87,7 +88,6 @@ if(!empty($_SESSION["erro_login"])){
             color: #437ECA;
             text-decoration: none;
         }
-
     </style>
 </head>
 
@@ -113,11 +113,16 @@ if(!empty($_SESSION["erro_login"])){
                 <br>
                 <br>
 
+                <div class="text-center">
                 <button type="submit" class="btn btn-primary">
                     Confirmar
                 </button>
-                <br><br>
+                    <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
+                </div>
+
+                <br>
                 <a href="saibamais.php" class='text-secondary fs-6 mt-0 text-decoration-underline'>Saiba mais</a>
+
 
 
             </form>
@@ -128,5 +133,4 @@ if(!empty($_SESSION["erro_login"])){
 </body>
 <script src="js/bootstrap.min.js"></script>
 
-</html> 
-
+</html>

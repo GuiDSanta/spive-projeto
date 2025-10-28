@@ -32,7 +32,7 @@ include("verifySession.php");
             background-color: white;
         }
 
-         .icones {
+        .icones {
             width: 32px;
             height: 32px;
             margin: 10px;
@@ -127,7 +127,7 @@ include("verifySession.php");
         </symbol>
     </svg>
 
-    
+
     <div class="LogoSpive">
         <div class="row">
 
@@ -217,9 +217,8 @@ include("verifySession.php");
                         onchange="
                         modelo = document.getElementById('modelo');
                         modelotext = modelo.value.toUpperCase();
-                        modelo.value = modelotext;"
-                        />
-                        
+                        modelo.value = modelotext;" />
+
                     <div class="invalid-feedback">Por favor, preencha o modelo do veículo.</div>
                 </div>
 
@@ -232,9 +231,7 @@ include("verifySession.php");
                         onchange="
                         placa = document.getElementById('placa');
                         placatext = placa.value.toUpperCase();
-                        placa.value = placatext;"
-                            
-                        />
+                        placa.value = placatext;" />
                     <div class="invalid-feedback">Por favor, preencha a placa do veículo.</div>
                 </div>
 
@@ -247,15 +244,15 @@ include("verifySession.php");
                         onchange="
                         marca = document.getElementById('marca');
                         marcatext = marca.value.toUpperCase();
-                        marca.value = marcatext;"
-
-                        />
+                        marca.value = marcatext;" />
                     <div class="invalid-feedback">Por favor, preencha a marca do veículo.</div>
                 </div>
 
-                <div class="form-group">
-                    <select class="form-select" style="border: solid 2px rgb(102, 102, 102); color:rgb(102, 102, 102);" name="corveiculo" id="corveiculo">
-                        <option>Selecione a cor do veículo</option>
+                <div class="form-group" id="campo-cor">
+                    <select class="form-select"
+                        style="border: solid 2px rgb(102, 102, 102); color:rgb(102, 102, 102);"
+                        name="corveiculo" id="corveiculo">
+                        <option>Selecione a cor do veículo:</option>
                         <option>Azul</option>
                         <option>Amarelo</option>
                         <option>Branco</option>
@@ -265,15 +262,16 @@ include("verifySession.php");
                         <option>Vinho</option>
                         <option>Verde</option>
                         <option>Vermelho</option>
-
-                        <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
+                        <option>Roxo</option>
+                        <option>Outra</option>
                     </select>
+                    <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
                 </div>
 
                 <br>
                 <br>
                 <div class="flex-row">
-                <button type="submit" class="btn btn-primary" onclick="
+                    <button type="submit" class="btn btn-primary" onclick="
                 
                 let corveiculo = document.getElementById('corveiculo');
                 let marca = document.getElementById('marca');
@@ -339,22 +337,72 @@ include("verifySession.php");
         </div>
 
     </main>
+    <script>
+  const campoCor = document.getElementById('campo-cor');
 
+  // Função que cria o select novamente
+  function criarSelectCor() {
+    campoCor.innerHTML = `
+      <select class="form-select" 
+        style="border: solid 2px rgb(102, 102, 102); color:rgb(102, 102, 102);" 
+        name="corveiculo" id="corveiculo">
+        <option>Selecione a cor do veículo:</option>
+        <option>Azul</option>
+        <option>Amarelo</option>
+        <option>Branco</option>
+        <option>Cinza</option>
+        <option>Laranja</option>
+        <option>Marrom</option>
+        <option>Vinho</option>
+        <option>Verde</option>
+        <option>Vermelho</option>
+        <option>Roxo</option>
+        <option>Outra</option>
+      </select>
+      <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
+    `;
+
+    // Reanexa o evento ao novo select
+    const selectCor = document.getElementById('corveiculo');
+    selectCor.addEventListener('change', handleCorChange);
+  }
+
+  // Função que lida com a escolha de cor
+  function handleCorChange(event) {
+    if (event.target.value === 'Outra') {
+      campoCor.innerHTML = `
+        <input type="text" class="form-control" id="corveiculo" name="corveiculo"
+          placeholder="Digite a cor do veículo" required
+          style="border: solid 2px rgb(102, 102, 102); color:rgb(102, 102, 102); box-shadow: 2px 2px 3px 0px grey;">
+        <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
+        <small><a href="#" id="voltarSelect">⬅️ Voltar para lista de cores</a></small>
+      `;
+
+      // Reanexa o botão "voltar"
+      document.getElementById('voltarSelect').addEventListener('click', function(e) {
+        e.preventDefault();
+        criarSelectCor();
+      });
+    }
+  }
+
+  // Ativa pela primeira vez
+  document.getElementById('corveiculo').addEventListener('change', handleCorChange);
+</script>
 </body>
 <script src="js/bootstrap.min.js"></script>
 <script>
-
-    placa.addEventListener("input", function(){ 
+    placa.addEventListener("input", function() {
         placa = document.getElementById('placa');
         placavalue = document.getElementById('placa').value;
         placareg = /^[A-Z]{3}-[0-9][A-Z0-9][0-9]{2}$/;
 
-        if(placavalue.length == 4 && placavalue[3] != "-"){
-            placa.value = placavalue[0] + placavalue[1] + placavalue[2] +"-"+ placavalue[3];
+        if (placavalue.length == 4 && placavalue[3] != "-") {
+            placa.value = placavalue[0] + placavalue[1] + placavalue[2] + "-" + placavalue[3];
         }
 
-        if(placavalue.length == 8){
-            if(placavalue.match(/^[A-Z]{3}-[0-9][A-Z0-9][0-9]{2}$/) || placavalue.match(/^[a-zA-Z]{3}[0-9][A-Za-z0-9][0-9]{2}$/) ){
+        if (placavalue.length == 8) {
+            if (placavalue.match(/^[A-Z]{3}-[0-9][A-Z0-9][0-9]{2}$/) || placavalue.match(/^[a-zA-Z]{3}[0-9][A-Za-z0-9][0-9]{2}$/)) {
                 placa.classList.remove("is-invalid");
             } else {
                 placa.classList.add("is-invalid");

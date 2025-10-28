@@ -162,12 +162,12 @@ if (!isset($_SESSION["id_usuario"]) || !isset($_SESSION["nome_usuario"]) || !iss
         }
 
         .carros {
-            max-width: 600px;
-            max-height: 400px;
+            max-width: 300px;
+            max-height: 300px;
             width: 70%;
             height: auto;
             border: none;
-            margin: 2px;
+            margin: 1px;
         }
     </style>
 </head>

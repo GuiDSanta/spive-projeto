@@ -282,13 +282,13 @@ include("verifySession.php");
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
+                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-80 h-25 mx-auto" alt="...">
                             <div class="carousel-caption">
                                 <h5 class="text-shadow fs-3">Chevrolet Onix</h5>
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
+                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-80 h-25 mx-auto" alt="...">
                             <div class="carousel-caption">
                                 <h5 class="text-shadow fs-3">Chevrolet Onix</h5>
                             </div>
