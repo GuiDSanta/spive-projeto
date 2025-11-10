@@ -206,143 +206,125 @@ include("verifySession.php");
     <main class="container">
         <div class="form p-md-3">
             <br>
-            <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE VEÍCULO</h1>
-            <form id="meuFormulario" class="text-center" method="post" novalidate>
+            <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE CONDUTOR</h1>
+            <form id="formCondutor" class="text-center" method="post" novalidate>
+                <!-- Nome Completo -->
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="modelo" id="modelo" minlength="3" placeholder="Modelo do Veículo"
-                        required onkeyup="
-                        modelo = document.getElementById('modelo');
-                        modelotext = modelo.value.toUpperCase();
-                        modelo.value = modelotext;"
-                        onchange="
-                        modelo = document.getElementById('modelo');
-                        modelotext = modelo.value.toUpperCase();
-                        modelo.value = modelotext;" />
-
-                    <div class="invalid-feedback">Por favor, preencha o modelo do veículo.</div>
+                    <input type="text" class="form-control" name="nome" id="nome" minlength="3"
+                        placeholder="Nome completo do condutor" value="<?php echo  ?>" disabled/>
+                    <div class="invalid-feedback">Por favor, preencha o nome completo do condutor.</div>
                 </div>
 
+                <!-- CPF -->
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="placa" id="placa" minlength="3" maxlength="8"
-                        placeholder="Placa do Veículo" required onkeyup="
-                        placa = document.getElementById('placa');
-                        placatext = placa.value.toUpperCase();
-                        placa.value = placatext;"
-                        onchange="
-                        placa = document.getElementById('placa');
-                        placatext = placa.value.toUpperCase();
-                        placa.value = placatext;" />
-                    <div class="invalid-feedback">Por favor, preencha a placa do veículo.</div>
+                    <input type="text" class="form-control" name="cpf" id="cpf" minlength="11" maxlength="14"
+                        placeholder="CPF do condutor" required
+                        onkeyup="
+                let cpf = document.getElementById('cpf');
+                cpf.value = cpf.value.replace(/\D/g,'')
+                                     .replace(/(\d{3})(\d)/,'$1.$2')
+                                     .replace(/(\d{3})(\d)/,'$1.$2')
+                                     .replace(/(\d{3})(\d{1,2})$/,'$1-$2');" />
+                    <div class="invalid-feedback">Por favor, insira um CPF válido.</div>
                 </div>
 
+                <!-- Número da CNH -->
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="marca" id="marca" minlength="3"
-                        placeholder="Marca do Veículo" required onkeyup="
-                        marca = document.getElementById('marca');
-                        marcatext = marca.value.toUpperCase();
-                        marca.value = marcatext;"
-                        onchange="
-                        marca = document.getElementById('marca');
-                        marcatext = marca.value.toUpperCase();
-                        marca.value = marcatext;" />
-                    <div class="invalid-feedback">Por favor, preencha a marca do veículo.</div>
+                    <input type="text" class="form-control" name="cnh" id="cnh" minlength="5"
+                        placeholder="Número da CNH" required
+                        onkeyup="
+                let cnh = document.getElementById('cnh');
+                cnh.value = cnh.value.toUpperCase();" />
+                    <div class="invalid-feedback">Por favor, insira o número da CNH do condutor.</div>
                 </div>
 
-                <div class="form-group" id="campo-cor">
+                <!-- Categoria da CNH -->
+                <div class="form-group" id="campo-categoria">
                     <select class="form-select"
                         style="border: solid 2px rgb(102, 102, 102); color:rgb(102, 102, 102);"
-                        name="corveiculo" id="corveiculo">
-                        <option>Selecione a cor do veículo:</option>
-                        <option>Azul</option>
-                        <option>Amarelo</option>
-                        <option>Branco</option>
-                        <option>Cinza</option>
-                        <option>Laranja</option>
-                        <option>Marrom</option>
-                        <option>Vinho</option>
-                        <option>Verde</option>
-                        <option>Vermelho</option>
-                        <option>Roxo</option>
-                        <option>Outra</option>
+                        name="categoria" id="categoria" required>
+                        <option>Selecione a categoria da CNH:</option>
+                        <option>A</option>
+                        <option>B</option>
+                        <option>AB</option>
+                        <option>C</option>
+                        <option>D</option>
+                        <option>E</option>
                     </select>
-                    <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
+                    <div class="invalid-feedback">Por favor, selecione a categoria da CNH.</div>
                 </div>
 
-                <br>
-                <br>
+                <br><br>
+
                 <div class="flex-row">
                     <button type="submit" class="btn btn-primary" onclick="
-                
-                let corveiculo = document.getElementById('corveiculo');
-                let marca = document.getElementById('marca');
-                let modelo = document.getElementById('modelo');
-                let placa = document.getElementById('placa');
+            let nome = document.getElementById('nome');
+            let cpf = document.getElementById('cpf');
+            let cnh = document.getElementById('cnh');
+            let categoria = document.getElementById('categoria');
 
-                if(modelo.value.trim().length < 3){
-                    modelo.classList.add('is-invalid');
-                    modelo.classList.add('is-valid');
-                    modelo.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-                    alert('Por favor, preencha o modelo do veículo com pelo menos 3 caracteres.');
-                    event.preventDefault();
-                    return false;
-                }else{
-                    modelo.classList.remove('is-invalid');
-                    modelo.style.border = 'solid 2px rgb(102, 102, 102)';
-                }
+            if(nome.value.trim().length < 3){
+                nome.classList.add('is-invalid');
+                nome.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Por favor, preencha o nome completo do condutor com pelo menos 3 caracteres.');
+                event.preventDefault();
+                return false;
+            }else{
+                nome.classList.remove('is-invalid');
+                nome.classList.add('is-valid');
+                nome.style.border = 'solid 2px rgb(102, 102, 102)';
+            }
 
-                if(placa.value.trim().length < 3){
-                    placa.classList.add('is-invalid');
-                    placa.classList.add('is-valid');
-                    placa.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-                    alert('Por favor, preencha a placa do veículo com pelo menos 3 caracteres.');
-                    event.preventDefault();
-                    return false;
-                }else{
-                    placa.classList.remove('is-invalid');
-                    placa.style.border = 'solid 2px rgb(102, 102, 102)';
-                }
+            if(cpf.value.trim().length < 14){
+                cpf.classList.add('is-invalid');
+                cpf.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Por favor, insira um CPF válido.');
+                event.preventDefault();
+                return false;
+            }else{
+                cpf.classList.remove('is-invalid');
+                cpf.classList.add('is-valid');
+                cpf.style.border = 'solid 2px rgb(102, 102, 102)';
+            }
 
-                if(marca.value.trim().length < 3){
-                    marca.classList.add('is-invalid');
-                    marca.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-                    alert('Por favor, preencha a marca do veículo com pelo menos 3 caracteres.');
-                    event.preventDefault();
-                    return false;
-                }else{
-                    marca.classList.remove('is-invalid');
-                     marca.classList.add('is-valid');
-                    marca.style.border = 'solid 2px rgb(102, 102, 102)';
-                }
+            if(cnh.value.trim().length < 5){
+                cnh.classList.add('is-invalid');
+                cnh.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Por favor, preencha o número da CNH corretamente.');
+                event.preventDefault();
+                return false;
+            }else{
+                cnh.classList.remove('is-invalid');
+                cnh.classList.add('is-valid');
+                cnh.style.border = 'solid 2px rgb(102, 102, 102)';
+            }
 
-                
-
-                
-
-                if( corveiculo.value == 'Selecione a cor do veículo'){
-                    corveiculo.classList.add('is-invalid');
-                    corveiculo.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-                    alert('Por favor, selecione a cor do veículo.');
-                    event.preventDefault();
-                    return false;
-                }else{
-                    corveiculo.classList.remove('is-invalid');
-                    corveiculo.classList.add('is-valid');
-                    corveiculo.style.border = 'solid 2px rgb(102, 102, 102)';
-                }
-                ">Próximo</button>
-
+            if(categoria.value == 'Selecione a categoria da CNH:'){
+                categoria.classList.add('is-invalid');
+                categoria.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Por favor, selecione a categoria da CNH.');
+                event.preventDefault();
+                return false;
+            }else{
+                categoria.classList.remove('is-invalid');
+                categoria.classList.add('is-valid');
+                categoria.style.border = 'solid 2px rgb(102, 102, 102)';
+            }
+        ">Próximo</button>
+                </div>
             </form>
+
             <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
         </div>
         </div>
 
     </main>
     <script>
-  const campoCor = document.getElementById('campo-cor');
+        const campoCor = document.getElementById('campo-cor');
 
-  // Função que cria o select novamente
-  function criarSelectCor() {
-    campoCor.innerHTML = `
+        // Função que cria o select novamente
+        function criarSelectCor() {
+            campoCor.innerHTML = `
       <select class="form-select" 
         style="border: solid 2px rgb(102, 102, 102); color:rgb(102, 102, 102);" 
         name="corveiculo" id="corveiculo">
@@ -362,33 +344,33 @@ include("verifySession.php");
       <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
     `;
 
-    // Reanexa o evento ao novo select
-    const selectCor = document.getElementById('corveiculo');
-    selectCor.addEventListener('change', handleCorChange);
-  }
+            // Reanexa o evento ao novo select
+            const selectCor = document.getElementById('corveiculo');
+            selectCor.addEventListener('change', handleCorChange);
+        }
 
-  // Função que lida com a escolha de cor
-  function handleCorChange(event) {
-    if (event.target.value === 'Outra') {
-      campoCor.innerHTML = `
+        // Função que lida com a escolha de cor
+        function handleCorChange(event) {
+            if (event.target.value === 'Outra') {
+                campoCor.innerHTML = `
         <input type="text" class="form-control" id="corveiculo" name="corveiculo"
           placeholder="Digite a cor do veículo" required
           style="border: solid 2px rgb(102, 102, 102); color:rgb(102, 102, 102); box-shadow: 2px 2px 3px 0px grey;">
         <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
-        <small><a href="#" id="voltarSelect">⬅️ Voltar para lista de cores</a></small>
+        <small><a href="#" id="voltarSelect"><br>⬅️ Voltar para lista de cores</a></small>
       `;
 
-      // Reanexa o botão "voltar"
-      document.getElementById('voltarSelect').addEventListener('click', function(e) {
-        e.preventDefault();
-        criarSelectCor();
-      });
-    }
-  }
+                // Reanexa o botão "voltar"
+                document.getElementById('voltarSelect').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    criarSelectCor();
+                });
+            }
+        }
 
-  // Ativa pela primeira vez
-  document.getElementById('corveiculo').addEventListener('change', handleCorChange);
-</script>
+        // Ativa pela primeira vez
+        document.getElementById('corveiculo').addEventListener('change', handleCorChange);
+    </script>
 </body>
 <script src="js/bootstrap.min.js"></script>
 <script>
@@ -411,103 +393,6 @@ include("verifySession.php");
 
         }
 
-    });
-
-    document.getElementById("meuFormulario").addEventListener("submit", async function(e) {
-        e.preventDefault();
-        let formValido = true;
-
-        const inputs = this.querySelectorAll("input");
-        inputs.forEach((input) => input.classList.remove("is-invalid"));
-
-        const nome = document.getElementById("nome");
-        const sobrenome = document.getElementById("sobrenome");
-        const email = document.getElementById("email");
-        const confemail = document.getElementById("confemail");
-        const password = document.getElementById("password");
-        const confpassword = document.getElementById("confpassword");
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const letrasRegex = /^[A-Za-zÀ-ÿ\s]+$/;
-
-        // Valida nome
-        if (!letrasRegex.test(nome.value.trim())) {
-            nome.classList.add("is-invalid");
-            nome.nextElementSibling.textContent = "O nome deve conter apenas letras.";
-            formValido = false;
-        }
-
-        // Valida sobrenome
-        if (!letrasRegex.test(sobrenome.value.trim())) {
-            sobrenome.classList.add("is-invalid");
-            sobrenome.nextElementSibling.textContent = "O sobrenome deve conter apenas letras.";
-            formValido = false;
-        }
-
-        // Valida e-mail
-        if (!emailRegex.test(email.value.trim())) {
-            email.classList.add("is-invalid");
-            formValido = false;
-        }
-
-        // Confirmação de e-mail
-        if (confemail.value.trim() !== "") {
-            try {
-                const response = await fetch('verificar_email.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: `confemail=${encodeURIComponent(confemail.value.trim())}`
-                });
-
-                const data = await response.json();
-                if (data.existe) {
-                    confemail.classList.add("is-invalid");
-                    email.classList.add("is-invalid");
-                    confemail.nextElementSibling.textContent = "O email já está em uso.";
-                    email.nextElementSibling.textContent = "";
-                    formValido = false;
-                } else {
-                    formValido = true;
-                }
-            } catch (error) {
-                console.error('Erro ao verificar o e-mail:', error);
-            }
-        }
-        if (confemail.value.trim() !== email.value.trim()) {
-            confemail.classList.add("is-invalid");
-            confemail.nextElementSibling.textContent = "Os emails não coincidem.";
-            email.nextElementSibling.textContent = "";
-            formValido = false;
-        }
-
-
-        // Senha
-        if (password.value.length < 6) {
-            password.classList.add("is-invalid");
-            formValido = false;
-        }
-
-        // Confirmação de senha
-        if (confpassword.value !== password.value) {
-            confpassword.classList.add("is-invalid");
-            formValido = false;
-        }
-
-        if (formValido) {
-            const dadosCadastro = {
-                nome: nome.value.trim(),
-                sobrenome: sobrenome.value.trim(),
-                email: email.value.trim(),
-                password: password.value
-            };
-
-            localStorage.setItem("dadosEtapa1", JSON.stringify(dadosCadastro));
-
-            // Redireciona para a etapa 2
-            window.location.href = "cadastro2.php";
-        }
     });
 </script>
 

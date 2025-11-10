@@ -48,6 +48,25 @@ CREATE TABLE usuario(id int PRIMARY KEY AUTO_INCREMENT,
                     nascimento date NOT NULL,
                     telefone varchar(11) NOT NULL);
                     
+
+
+
+CREATE TABLE dispositivo(
+id int PRIMARY KEY AUTO_INCREMENT,
+    vidro_aberto bool NOT NULL,
+temperatura int NOT NULL,
+    umidade int NOT NULL,
+    presenca int NOT NULL,
+    oxigenio int NOT NULL,
+    perigo_temp bool NOT NULL,
+    perigo_oxi bool NOT NULL,
+    ar_ligado bool NOT NULL,
+    id_esp int NOT NULL,
+    veiculo_id int NOT NULL,
+    FOREIGN KEY (veiculo_id) REFERENCES veiculo(id_veiculo)
+);
+
+
 select * from usuario;
 
 drop table usuario;

@@ -1,5 +1,8 @@
 <?php
 include("verifySession.php");
+include("verifyRegister.php");
+$voltar_para = 'meusveiculos.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -184,7 +187,7 @@ include("verifySession.php");
                 <div class="offcanvas-body ajustamento">
                     <ul class="nav nav-pills flex-column mb-auto">
                         <li class="nav-item">
-                            <a href="#" class="nav-link active" aria-current="page">
+                            <a href="telainicial.php" class="nav-link link-dark" aria-current="page">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house mb-1" viewBox="0 0 16 16">
                                     <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
                                 </svg>
@@ -192,7 +195,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link link-dark">
+                            <a href="meusveiculos.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-car-front-fill mb-1" viewBox="0 0 16 16">
                                     <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2m10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM2.906 5.189a.51.51 0 0 0 .497.731c.91-.073 3.35-.17 4.597-.17s3.688.097 4.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 11.691 3H4.309a.5.5 0 0 0-.447.276L2.906 5.19Z" />
                                 </svg>
@@ -200,7 +203,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link link-dark">
+                            <a href="cadastrarnovoveiculo.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle mb-1" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
@@ -232,7 +235,7 @@ include("verifySession.php");
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
                             <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
-                            <strong><?php echo ($_SESSION['nome_usuario'])." ".($_SESSION['sobrenome_usuario']); ?></strong>
+                            <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
 
@@ -254,22 +257,42 @@ include("verifySession.php");
         <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
         <h4 class="mt-3">Status Veículo</h4>
         <div style="height: 300px; overflow-y: scroll; padding: 15px; margin-bottom: 20px;">
-            <h5 class="mt-3">Temperatura:</h5> 
+            <h5 class="mt-3">Temperatura Interna: <?php echo ($dispositivo[0]['temperatura']); ?> °C</h5>
             <hr>
-            <h5 class="mt-3">Nível de Oxigênio:</h5> 
+            <h5 class="mt-3">Status Temperatura: <?php
+                                                    if ($dispositivo[0]['perigo_temp'] >= 38) {
+                                                        echo '<span class="text-danger">Alto Risco!</span>';
+                                                    } else {
+                                                        echo '<span class="text-success">Normal</span>';
+                                                    } ?>
+            </h5>
             <hr>
-            <h5 class="mt-3">Nível de CO2:</h5> 
+            <h5 class="mt-3">Nível de Oxigênio: <?php echo ($dispositivo[0]['oxigenio']); ?> p.p.m.</h5>
             <hr>
-            <h5 class="mt-3">Ocupantes:</h5> 
-            <hr>
-            <h5 class="mt-3">Localização:</h5>
-            <iframe src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d913.5565647822999!2d-46.46046999139668!3d-23.667865331599426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e3!4m0!4m5!1s0x94ce69686cf767e1%3A0x34478f518ddbe831!2sR.%20Faustino%20Pereira%20Rito%20-%20RP1%20(Regi%C3%B5es%20de%20Planejamento)%2C%20Mau%C3%A1%20-%20SP%2C%2009310-105!3m2!1d-23.667735699999998!2d-46.459874899999996!5e0!3m2!1spt-BR!2sbr!4v1760970326869!5m2!1spt-BR!2sbr" width="320" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            
+            <h5 class="mt-3">Status Oxigênio: <?php
+                                                if ($dispositivo[0]['perigo_oxi'] <= 195000) {
+                                                    echo '<span class="text-danger">Alto Risco!</span>';
+                                                } else {
+                                                    echo '<span class="text-success">Normal</span>';
+                                                } ?>
+                <hr>
+                <h5 class="mt-3">Nível de Umidade: <?php echo ($dispositivo[0]['umidade']); ?>%</h5>
+                <hr>
+                <h5 class="mt-3">Carro Vazio: <?php if ($dispositivo[0]['presenca'] == 0) {
+                                                    echo "Sim";
+                                                } else {
+                                                    echo "Não";
+                                                } ?>
+                </h5>
+                <hr>
+                <h5 class="mt-3">Localização:</h5>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d913.5565647822999!2d-46.46046999139668!3d-23.667865331599426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e3!4m0!4m5!1s0x94ce69686cf767e1%3A0x34478f518ddbe831!2sR.%20Faustino%20Pereira%20Rito%20-%20RP1%20(Regi%C3%B5es%20de%20Planejamento)%2C%20Mau%C3%A1%20-%20SP%2C%2009310-105!3m2!1d-23.667735699999998!2d-46.459874899999996!5e0!3m2!1spt-BR!2sbr!4v1760970326869!5m2!1spt-BR!2sbr" width="320" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
         </div>
 
         <div class="alinhar text-center mt-3">
-            <a button type="submit" class="btn btn-primary" href="#">Ações</a>
-            
+            <a button type="submit" class="btn btn-primary" href="acoesVeiculos.php">Ações</a>
+            <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
         </div>
 
 

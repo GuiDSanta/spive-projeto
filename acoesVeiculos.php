@@ -88,7 +88,8 @@ include("verifySession.php");
 
         p {
             color: gray;
-            font-size: 13px;
+            font-size: 12px;
+
         }
 
         .esqueci {
@@ -172,9 +173,57 @@ include("verifySession.php");
         }
 
         .sos {
+            color: red;
+            
+        }
+
+        .btn1{
+            height: 40px;
+            width: 120px;
+            background-color: #16427F;
+            color: white;
+            border-radius: 2px;
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            
+        }
+
+        .btn1:active{
+            background-color: #061f42ff;
+            transform: scale(1.1);
+        }
+
+        .btn2{
+            height: 40px;
+            width: 120px;
             background-color: #ff0000ff;
             color: white;
+            padding: auto;
+            border-radius: 2px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
         }
+
+        .btn2:active{
+            background-color: #b30000ff;
+            transform: scale(1.1);
+        }
+
+
+        .linha{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+    
+        
     </style>
 </head>
 
@@ -194,7 +243,7 @@ include("verifySession.php");
                 <div class="offcanvas-body ajustamento">
                     <ul class="nav nav-pills flex-column mb-auto">
                         <li class="nav-item">
-                            <a href="#" class="nav-link active" aria-current="page">
+                            <a href="telainicial.php" class="nav-link link-dark" aria-current="page">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house mb-1" viewBox="0 0 16 16">
                                     <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
                                 </svg>
@@ -202,7 +251,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link link-dark">
+                            <a href="meusveiculos.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-car-front-fill mb-1" viewBox="0 0 16 16">
                                     <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2m10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM2.906 5.189a.51.51 0 0 0 .497.731c.91-.073 3.35-.17 4.597-.17s3.688.097 4.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 11.691 3H4.309a.5.5 0 0 0-.447.276L2.906 5.19Z" />
                                 </svg>
@@ -210,7 +259,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link link-dark">
+                            <a href="cadastrarnovoveiculo.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle mb-1" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
@@ -264,28 +313,161 @@ include("verifySession.php");
         <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
         <h4 class="mt-3">Ações Veículo</h4>
         <hr>
-            <h5 class="mt-3">Abaixar vidros:</h5> 
+
+        <div class="linha">
+            <h5 class="mt-3">Abaixar vidros:</h5>
+            <button type="button" id="vidro" class="btn1" data-bs-toggle="modal" data-bs-target="#confirmarVidro">Abaixar</button>
+        </div>
             <p>Abaixa parcialmente os vidros do veículo.</p> 
             <hr>
+        
+        <div class="linha">    
             <h5 class="mt-3">Ar condicionado:</h5>
-            <p>Gerencia o ar condicionado do veículo.</p> 
+            <button type="button" id="Ar-botao" class="btn1" data-bs-toggle="modal" data-bs-target="#ligarAr">Ligar</button>
+        </div>
+            <p>Gerencia o ar condicionado do veículo.</p>    
             <hr>
+        
+        <div class="linha">   
             <div class="sos">
             <h5 class="mt-3 SOS ">SOS :</h5>
-            <p>Aciona a emergência.</p>
             </div> 
+            <button type="button" id="emergencia" class="btn2" data-bs-toggle="modal" data-bs-target="#ligar_emergencia">EMERGÊNCIA</button>
+        </div>
+            <p1 class="sos">Aciona a emergência.</p1>
             <hr>
 
         </div>
 
         <div class="alinhar text-center mt-3">
-            <a button type="submit" class="btn btn-primary" href="#">Ações</a>
-            
+            <a button type="submit" class="btn btn-primary" href="statusveiculos.php">Voltar</a>
         </div>
 
 
 
     </main>
+
+        <!-- Modal de confirmação Vidro -->
+<div class="modal fade" id="confirmarVidro" tabindex="-1" aria-labelledby="confirmarVidroLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-body text-center">
+        <p id="texto_vidro" class="fs-5 mb-3">Tem certeza que deseja abaixar o vidro?</p>
+        <div class="d-flex justify-content-center gap-3">
+          <button type="button" class="btn bg-danger text-light px-4" id="confirmarSim">Sim</button>
+          <button type="button" class="btn btn-secondary px-4" id="cancelar" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- Fim do modal de confirmação Vidro -->
+
+    <!-- Modal de confirmação Ar condicionado -->
+<div class="modal fade" id="ligarAr" tabindex="-1" aria-labelledby="ligarArLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-body text-center">
+        <p id="texto_ar" class="fs-5 mb-3">Tem certeza que deseja ligar o Ar-condicionado</p>
+        <div class="d-flex justify-content-center gap-3">
+          <button type="button" class="btn bg-danger px-4 text-light" id="Sim">Sim</button>
+          <button type="button" class="btn btn-secondary px-4" id="cancelar" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- Fim do modal de confirmação Vidro -->
+
+    <!-- Modal de Emergência -->
+<div class="modal fade" id="ligar_emergencia" tabindex="-1" aria-labelledby="ligar_emergenciaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-body text-center">
+        <p id="texto_emergencia" class="text-danger fs-5 mb-3">ATENÇÃO!</p>
+        <img src="img\warning_300dp_EA3323_FILL0_wght400_GRAD0_opsz48.png" alt="Aviso" width="1" height="2">
+        <br>
+        <p id="texto_emergencia" class="text-danger fs-5 mb-3">Tem certeza que deseja ligar para a emergência?</p>
+        <div class="d-flex justify-content-center gap-3">
+          <button type="button" class="btn bg-danger text-light" id="confirmarSim3">Ligar</button>
+          <button type="button" class="btn btn-secondary px-4" id="cancelar" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- Fim do modal de Emergência -->
+
+
+  <script>
+
+  let vidro = document.getElementById("vidro");
+  let texto_vidro = document.getElementById("texto_vidro");
+  let confirma_sim = document.getElementById("confirmarSim");
+
+  let ar_condicionado = document.getElementById("Ar-botao");
+  let texto_ar = document.getElementById("texto_ar");
+  let confirmar_sim = document.getElementById("Sim");
+  
+  let emergencia = document.getElementById("emergencia");
+  let texto_emergencia = document.getElementById("texto_emergencia");
+  let confirmar_sim3 = document.getElementById("confirmarSim3");
+
+
+    document.getElementById("confirmarSim").addEventListener("click", function() {
+    if (vidro.innerText === "Levantar") {
+        vidro.innerText = "Abaixar"; // Se o texto for "Levantar", muda para "Abaixar"
+        texto_vidro.innerText = "Tem certeza que deseja abaixar o vidro?";
+        confirma_sim.innerText = "Sim";
+        vidro.style.backgroundColor = "#16427F";
+        var modal = bootstrap.Modal.getInstance(document.getElementById('confirmarVidro'));
+        modal.hide(); // Muda a cor do botão para verde
+        return; // Sai da função para evitar mudar novamente
+        
+    } else if(vidro.innerText === "Abaixar") {
+        vidro.innerText = "Levantar"; // Se o texto for "Abaixar", muda para "Levantar"
+        vidro.style.backgroundColor = "#f5463aff";
+        texto_vidro.innerText = "Tem certeza que deseja levantar o vidro?";
+        var modal = bootstrap.Modal.getInstance(document.getElementById('confirmarVidro'));
+        modal.hide();
+        return; // Sai da função para evitar mudar novamente
+    } 
+    });
+
+    document.getElementById("Sim").addEventListener("click", function() {
+    if (ar_condicionado.innerText === "Desligar") {
+        ar_condicionado.innerText = "Ligar"; 
+        texto_ar.innerText = "Tem certeza que deseja Ligar o Ar-condicionado?";
+        confirmar_sim.innerText = "Sim";
+        ar_condicionado.style.backgroundColor = "#16427F";
+        var modal = bootstrap.Modal.getInstance(document.getElementById('ligarAr'));
+        modal.hide(); 
+        return; 
+        
+    } else if(ar_condicionado.innerText === "Ligar") {
+        ar_condicionado.innerText = "Desligar"; 
+        ar_condicionado.style.backgroundColor = "#f5463aff";
+        texto_ar.innerText = "Tem certeza que deseja desligar o Ar-condicionado?";
+        var modal = bootstrap.Modal.getInstance(document.getElementById('ligarAr'));
+        modal.hide();
+        return; 
+    } 
+    });
+
+    document.getElementById("confirmarSim3").addEventListener("click", function() {
+    if(vidro.innerText === "Ligar para emergência") {
+        href = "wwww.google.com"; 
+        var modal = bootstrap.Modal.getInstance(document.getElementById('confirmarVidro'));
+        modal.hide();
+        return; // Sai da função para evitar mudar novamente
+    } 
+    });
+    
+
+
+    </script>
+
+
 </body>
 <script src="js/bootstrap.min.js"></script>
 

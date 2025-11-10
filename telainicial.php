@@ -1,5 +1,6 @@
 <?php
 include("verifySession.php");
+include("verifyRegister.php");
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -162,17 +163,28 @@ include("verifySession.php");
         }
 
         .carousel-caption {
-            position: absolute;
+            position: relative;
             right: 50%;
-            bottom: 1.25rem;
+            bottom: 2rem;
             left: 0%;
-            padding-top: 1.25rem;
-            padding-bottom: 10rem;
+            padding-top: 0rem;
+            padding-bottom: 0rem;
             text-align: center;
         }
 
         .text-shadow{
             text-shadow: black 2px 2px 5px;
+        }
+
+        .carromobile{
+            width: 300px;
+            height: 200px;
+        }
+
+        
+        .carrodesktop{
+            width: 800px;
+            height: 800px;
         }
     </style>
 </head>
@@ -209,7 +221,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="cadastrarnovo.php" class="nav-link link-dark">
+                            <a href="cadastrarnovoveiculo.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle mb-1" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
@@ -268,58 +280,71 @@ include("verifySession.php");
         <div class="card mb-3 bg-secondary bg-gradient">
             <!-- carrossel -->
             <div class="text-center">
-                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                
+            
+            <?php if (empty($veiculos)): ?>
+    <p class="text-white mt-3">Por favor, registre um veículo antes de continuar.</p>
+<?php else: ?>
+    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+        
+        <!-- indicadores -->
+        <div class="carousel-indicators">
+            <?php foreach ($veiculos as $index => $veiculo): ?>
+                <button type="button"
+                        data-bs-target="#carouselExampleCaptions"
+                        data-bs-slide-to="<?php echo $index; ?>"
+                        class="<?php echo $index === 0 ? 'active' : ''; ?>"
+                        aria-label="Slide <?php echo $index + 1; ?>">
+                </button>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- itens -->
+        <div class="carousel-inner">
+            <?php foreach ($veiculos as $index => $veiculo): ?>
+                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                    <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block carromobile mx-auto" alt="Carro">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5 class="text-shadow fs-3">
+                            <?php echo htmlspecialchars($veiculo['marca']) . " " . htmlspecialchars($veiculo['modelo']); ?>
+                        </h5>
                     </div>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-80 h-25 mx-auto" alt="...">
-                            <div class="carousel-caption">
-                                <h5 class="text-shadow fs-3">Chevrolet Onix</h5>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-80 h-25 mx-auto" alt="...">
-                            <div class="carousel-caption">
-                                <h5 class="text-shadow fs-3">Chevrolet Onix</h5>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-80 h-25 mx-auto" alt="...">
-                            <div class="carousel-caption">
-                                <h5 class="text-shadow fs-3">Chevrolet Onix</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
                 </div>
-            </div>
-            <!-- carrossel -->
+            <?php endforeach; ?>
+        </div>
+
+        <!-- controles -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
+    </div>
+<?php endif; ?>
         </div>
 
 
 
-        <div class="alinhar text-center mt-3">
-            <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
-            <a button type="submit" class="btn btn-primary" href="cadastrarnovo.php">Cadastrar Novo</a>
-        </div>
+
+        
+
+
 
 
 
     </main>
+    
+        <div class="alinhar text-center mt-3" style="font-family: madetommy, sans-serif;">
+            <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
+            <a button type="submit" class="btn btn-primary" href="cadastrarnovoveiculo.php">Cadastrar Novo</a>
+        </div>
 </body>
 <script src="js/bootstrap.min.js"></script>
 
 
 
 </html>
+
