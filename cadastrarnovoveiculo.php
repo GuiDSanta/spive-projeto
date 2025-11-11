@@ -207,7 +207,7 @@ include("verifySession.php");
         <div class="form p-md-3">
             <br>
             <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE VEÍCULO</h1>
-            <form id="meuFormulario" class="text-center" method="post" action="cadastrarnovoveiculo2.php" novalidate>
+            <form id="meuFormulario" class="text-center" method="post" action="cadastrarnovoveiculo2.php" novalidate onsubmit="return verificaCadastro(event);">
                 <div class="mb-3">
                     <input type="text" class="form-control" name="modelo" id="modelo" minlength="3" placeholder="Modelo do Veículo"
                         required onkeyup="
@@ -287,7 +287,7 @@ include("verifySession.php");
                 <br>
                 <br>
                 <div class="flex-row">
-                    <button type="submit" class="btn btn-primary" onclick="verificaCadastro(event);">Próximo</button>
+                    <button type="submit" class="btn btn-primary">Próximo</button>
 
             </form>
             <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
@@ -410,6 +410,8 @@ function verificaCadastro(event) {
     }
 
     return true;
+
+
 }
 
 

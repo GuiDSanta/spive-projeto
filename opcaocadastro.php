@@ -1,7 +1,15 @@
 <?php
-include("verifySession.php");
-include("verifyRegister.php");
+$voltar_para = 'telainicial.php'; // página padrão se não houver referer
+session_start();
+
+if (!isset($_SESSION["id_usuario"]) || !isset($_SESSION["nome_usuario"]) || !isset($_SESSION["email_usuario"])) {
+    $_SESSION["nome_usuario"] = "Faça Login";
+    $_SESSION["sobrenome_usuario"] = "";
+}
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -38,7 +46,7 @@ include("verifyRegister.php");
         }
 
         .LogoSpive {
-            height: 220px;
+            height: 260px;
             background-color: #16427F;
         }
 
@@ -154,43 +162,21 @@ include("verifyRegister.php");
         }
 
         .carros {
-            max-width: 600px;
-            max-height: 400px;
+            max-width: 300px;
+            max-height: 300px;
             width: 70%;
             height: auto;
             border: none;
-            margin: 2px;
-        }
-
-        .carousel-caption {
-            position: relative;
-            right: 50%;
-            bottom: 2rem;
-            left: 0%;
-            padding-top: 0rem;
-            padding-bottom: 0rem;
-            text-align: center;
-        }
-
-        .text-shadow{
-            text-shadow: black 2px 2px 5px;
-        }
-
-        .carromobile{
-            width: 300px;
-            height: 200px;
-        }
-
-        
-        .carrodesktop{
-            width: 800px;
-            height: 800px;
+            margin: 1px;
         }
     </style>
 </head>
 
 <body>
     <div class="LogoSpive">
+        <div class="text-center">
+            <img src="img/Spive (2048 x 2048 px) (1).png" alt="" class="carros" width="180px" height="300px">
+        </div>
         <div class="row">
 
             <a data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><img src="img/menu_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" class="icones position-absolute top-0 start-0 bg-transparent" width="32px" height="32px" alt=""></a>
@@ -205,7 +191,7 @@ include("verifyRegister.php");
                 <div class="offcanvas-body ajustamento">
                     <ul class="nav nav-pills flex-column mb-auto">
                         <li class="nav-item">
-                            <a href="#" class="nav-link active" aria-current="page">
+                            <a href="telainicial.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house mb-1" viewBox="0 0 16 16">
                                     <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
                                 </svg>
@@ -230,7 +216,7 @@ include("verifyRegister.php");
                             </a>
                         </li>
                         <li>
-                            <a href="saibamais.php" class="nav-link link-dark">
+                            <a href="#" class="nav-link link-dark" aria-current="page">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-right" viewBox="0 0 16 16">
                                     <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" />
                                 </svg>
@@ -253,89 +239,39 @@ include("verifyRegister.php");
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
                             <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
-                            <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
+                            <strong><?php echo ($_SESSION['nome_usuario'])." ".($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
 
 
-
-
                 </div>
+            </div>
+
+    </div>
+    <main class="container">
+        <div class="container py-5">
+            <h1 class="text-center mb-5">O que gostaria de cadastrar?</h1>
+            <div class="row g-4">
+
+            <div class="alinhar text-center mt-3" style="font-family: madetommy, sans-serif;">
+            <a button type="submit" class="btn btn-primary" href="cadastrarnovoveiculo.php">Veículo</a>
+            <a button type="submit" class="btn btn-primary" href="cadastrarnovocondutor.php">Proprietário</a>
+            <br>
+            <br>
+            </div>
+        
+            <hr>
+
+                
+
+
+            </div>
+            <div class="justify-content-center d-flex">
+                <button type="button" class="btn btn-primary text-center mt-3 " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
             </div>
         </div>
 
-        <a href="telainicial.php"><img src="img/home_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" class="icones2 position-absolute top-0 end-0 bg-transparent" width="32px" height="32px" alt=""></a>
-
-    </div>
-
-    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png">
-    <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
-    <a href="perfil.php" class="usuario2 position-absolute top-0 start-50 translate-middle-x">Editar Perfil</a>
-    </div>
-    <main class="container">
-        <h5 class="mt-3">Gerenciar Veículos</h5>
-
-        <!-- Os dados para este campo virão do PHP -->
-
-        <div class="card mb-3 bg-secondary bg-gradient">
-            <!-- carrossel -->
-            <div class="text-center">
-                
-            
-            <?php if (empty($veiculos)): ?>
-    <p class="text-white mt-3">Por favor, registre um veículo antes de continuar.</p>
-<?php else: ?>
-    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
-        
-        <!-- indicadores -->
-        <div class="carousel-indicators">
-            <?php foreach ($veiculos as $index => $veiculo): ?>
-                <button type="button"
-                        data-bs-target="#carouselExampleCaptions"
-                        data-bs-slide-to="<?php echo $index; ?>"
-                        class="<?php echo $index === 0 ? 'active' : ''; ?>"
-                        aria-label="Slide <?php echo $index + 1; ?>">
-                </button>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- itens -->
-        <div class="carousel-inner">
-            <?php foreach ($veiculos as $index => $veiculo): ?>
-                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                    <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block carromobile mx-auto" alt="Carro">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5 class="text-shadow fs-3">
-                            <?php echo htmlspecialchars($veiculo['marca']) . " " . htmlspecialchars($veiculo['modelo']); ?>
-                        </h5>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- controles -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Próximo</span>
-        </button>
-    </div>
-<?php endif; ?>
-        </div>
-
-    </main>
-    
-        <div class="alinhar text-center mt-3" style="font-family: madetommy, sans-serif;">
-            <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
-            <a button type="submit" class="btn btn-primary" href="opcaocadastro.php">Cadastrar Novo</a>
-        </div>
 </body>
 <script src="js/bootstrap.min.js"></script>
 
-
-
 </html>
-

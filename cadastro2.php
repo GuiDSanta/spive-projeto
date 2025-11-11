@@ -119,9 +119,15 @@
                 </div>
 
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="cpf" name="cpf" placeholder="CPF" required
-                        maxlength="11" />
-                    <div class="invalid-feedback">CPF deve conter exatamente 11 números.</div>
+                    <input type="text" class="form-control" name="cpf" id="cpf" minlength="11" maxlength="14"
+                        placeholder="CPF" required
+                        onkeyup="
+                let cpf = document.getElementById('cpf');
+                cpf.value = cpf.value.replace(/\D/g,'')
+                                     .replace(/(\d{3})(\d)/,'$1.$2')
+                                     .replace(/(\d{3})(\d)/,'$1.$2')
+                                     .replace(/(\d{3})(\d{1,2})$/,'$1-$2');" />
+                    <div class="invalid-feedback">Por favor, insira um CPF válido.</div>
                 </div>
 
                 <div class="mb-3 dateNasc">

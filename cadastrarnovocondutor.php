@@ -206,13 +206,13 @@ include("verifySession.php");
     <main class="container">
         <div class="form p-md-3">
             <br>
-            <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE CONDUTOR</h1>
+            <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE PROPRIETÁRIO</h1>
             <form id="formCondutor" class="text-center" method="post" novalidate>
                 <!-- Nome Completo -->
                 <div class="mb-3">
                     <input type="text" class="form-control" name="nome" id="nome" minlength="3"
-                        placeholder="Nome completo do condutor" value="<?php echo  ?>" disabled/>
-                    <div class="invalid-feedback">Por favor, preencha o nome completo do condutor.</div>
+                        placeholder="Nome completo do condutor" />
+                    <div class="invalid-feedback">Por favor, preencha este campo.</div>
                 </div>
 
                 <!-- CPF -->
@@ -230,12 +230,12 @@ include("verifySession.php");
 
                 <!-- Número da CNH -->
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="cnh" id="cnh" minlength="5"
-                        placeholder="Número da CNH" required
+                    <input type="text" maxlength="9" class="form-control" name="cnh" id="cnh" minlength="5"
+                         placeholder="Número da CNH" required
                         onkeyup="
                 let cnh = document.getElementById('cnh');
                 cnh.value = cnh.value.toUpperCase();" />
-                    <div class="invalid-feedback">Por favor, insira o número da CNH do condutor.</div>
+                    <div class="invalid-feedback">Por favor, insira o número da CNH corretamente.</div>
                 </div>
 
                 <!-- Categoria da CNH -->
@@ -310,14 +310,17 @@ include("verifySession.php");
                 categoria.classList.add('is-valid');
                 categoria.style.border = 'solid 2px rgb(102, 102, 102)';
             }
+
+            window.location.href='<?= $voltar_para ?>'
+
         ">Próximo</button>
-                </div>
+                
             </form>
 
             <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
         </div>
         </div>
-
+</div>
     </main>
     <script>
         const campoCor = document.getElementById('campo-cor');

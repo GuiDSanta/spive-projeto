@@ -70,3 +70,79 @@ temperatura int NOT NULL,
 select * from usuario;
 
 drop table usuario;
+
+
+
+-- Código para salvar imagens no banco de dados -- 
+
+<?php
+include("verifySession.php");
+include("conexaodb.php");
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $numChassi = $_POST['numchassi'];
+    $numMotor = $_POST['nummotor'];
+    $idUsuario = $_SESSION['id_usuario'];
+
+    $pasta = "uploads/";
+
+    // Cria a pasta se não existir
+    if (!is_dir($pasta)) {
+        mkdir($pasta, 0777, true);
+    }
+
+    // --------------------------
+    // 1. Salvar o comprovante
+    // --------------------------
+    $fotoComprovante = null;
+    if (!empty($_FILES['fotoc']['name'])) {
+        $ext = pathinfo($_FILES['fotoc']['name'], PATHINFO_EXTENSION);
+        $novoNomeC = uniqid("comp_", true) . "." . strtolower($ext);
+        $destinoC = $pasta . $novoNomeC;
+
+        if (move_uploaded_file($_FILES['fotoc']['tmp_name'], $destinoC)) {
+            $fotoComprovante = $destinoC;
+        }
+    }
+
+    // --------------------------
+    // 2. Inserir o veículo
+    // --------------------------
+    $sql = "INSERT INTO veiculos (id_usuario, num_chassi, num_motor, foto_comprovante)
+            VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isss", $idUsuario, $numChassi, $numMotor, $fotoComprovante);
+
+    if ($stmt->execute()) {
+        $idVeiculo = $stmt->insert_id; // pega o ID do veículo recém-cadastrado
+
+        // --------------------------
+        // 3. Salvar as fotos do veículo
+        // --------------------------
+        if (!empty($_FILES['foto']['name'][0])) {
+            foreach ($_FILES['foto']['tmp_name'] as $i => $tmpName) {
+                if ($_FILES['foto']['error'][$i] === 0) {
+                    $ext = pathinfo($_FILES['foto']['name'][$i], PATHINFO_EXTENSION);
+                    $novoNome = uniqid("foto_", true) . "." . strtolower($ext);
+                    $destino = $pasta . $novoNome;
+
+                    if (move_uploaded_file($tmpName, $destino)) {
+                        $sqlFoto = "INSERT INTO veiculo_fotos (id_veiculo, caminho_foto) VALUES (?, ?)";
+                        $stmtFoto = $conn->prepare($sqlFoto);
+                        $stmtFoto->bind_param("is", $idVeiculo, $destino);
+                        $stmtFoto->execute();
+                        $stmtFoto->close();
+                    }
+                }
+            }
+        }
+
+        echo "<script>alert('Veículo cadastrado com sucesso!'); window.location.href='telainicial.php';</script>";
+    } else {
+        echo "<script>alert('Erro ao cadastrar veículo.'); history.back();</script>";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
