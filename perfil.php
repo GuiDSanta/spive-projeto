@@ -348,7 +348,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="email" name="email" id="email" placeholder="<?php echo ($_SESSION['email_usuario']); ?>">
                     <br>
                     <div class=text-center>
-                        <button class="btn btn-primary" type="submit" style="background-color: #16427F;">Salvar</button>
+                        <button class="btn btn-primary" type="submit" style="background-color: #16427F;"
+                        >Salvar</button>
                     </div>
                 </form>
             </div>

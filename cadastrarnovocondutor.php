@@ -1,7 +1,93 @@
 <?php
-$voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php'; // página padrão se não houver referer
+$voltar_para = 'telainicial.php'; // página padrão se não houver referer
 include("verifySession.php");
+include("conexaodb.php"); // conexão com o banco
+
+$id = $_SESSION['id_usuario'];
+$sql_check = "SELECT * FROM proprietario WHERE id = ?"; 
+$stmt_check = $conn->prepare($sql_check);
+
+if ($stmt_check === false) {
+    // Trata erro de preparação da query, se necessário
+    die('Erro na preparação da query de proprietário: ' . $conn->error);
+}
+
+$stmt_check->bind_param("i", $id);
+$stmt_check->execute();
+$result_check = $stmt_check->get_result();
+
+if ($result_check->num_rows === 1) {
+    // SE NÃO HOUVER PROPRIETÁRIO CADASTRADO, REDIRECIONA
+    $stmt_check->close();
+    $conn->close();
+    header("Location: cadastrarnovoveiculo.php");
+    exit; // Crucial para interromper a execução após o redirecionamento
+}
 ?>
+
+<?php
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    
+    $nome = trim($_POST['nome'] ?? '');
+    $cpf = trim($_POST['cpf'] ?? '');
+    $cnh = trim($_POST['cnh'] ?? '');
+    $categoria = trim($_POST['categoria'] ?? '');
+
+    $cpf = preg_replace('/\D+/', '', $cpf);
+    $cnh = preg_replace('/\D+/', '', $cnh);
+
+if(preg_match('/\d/', $nome)) {
+    echo "<script>alert('Erro: O nome não pode conter números.'); history.back();</script>";
+    exit;
+}
+
+if(!preg_match('/^\d{11}$/', $cpf)) {
+    echo "<script>alert('Erro: O CPF deve conter 11 dígitos numéricos.'); history.back();</script>";
+    exit;
+}
+
+if(!preg_match('/^\d{9}$/', $cnh)) {
+    echo "<script>alert('Erro: A CNH deve conter 9 dígitos numéricos.'); history.back();</script>";
+    exit;
+}
+
+if(empty($categoria)|| $categoria === 'Selecione a categoria da CNH:') {
+    echo "<script>alert('Erro: A categoria não pode estar vazia.'); history.back();</script>";
+    exit;
+}
+
+    // exemplo de insert (ajuste nomes de tabela/colunas e $conn)
+    // certifique-se de ter $conn = new mysqli(...);
+    $stmt = $conn->prepare("INSERT INTO proprietario (id,nome, cpf, cnh, categoria) VALUES (?,?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "<script>alert('Erro no servidor. Tente mais tarde.'); history.back();</script>";
+        exit;
+    }
+
+    $stmt->bind_param('issss', $id, $nome, $cpf, $cnh, $categoria);
+    if (!$stmt->execute()) {
+        echo "<script>alert('Erro ao salvar: " . addslashes($stmt->error) . "'); history.back();</script>";
+        $stmt->close();
+        $conn->close();
+        exit;
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    echo "<script>alert('Condutor cadastrado com sucesso!'); window.location.href='meusveiculos.php';</script>";
+    exit;
+
+}
+
+
+
+
+?>
+
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -159,7 +245,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link active" aria-current="page">
+                            <a href="#" class="nav-link link-dark" aria-current="page">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle mb-1" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
@@ -206,35 +292,26 @@ include("verifySession.php");
     <main class="container">
         <div class="form p-md-3">
             <br>
+            
             <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE PROPRIETÁRIO</h1>
-            <form id="formCondutor" class="text-center" method="post" novalidate>
+            <h6 class="text-center mb-3 " style="font-family: madetommyM;">É necessário ser um condutor para registrar um veículo</h6>
+            <form id="formCondutor" class="text-center" method="post" novalidate action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <!-- Nome Completo -->
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="nome" id="nome" minlength="3"
-                        placeholder="Nome completo do condutor" />
+                    <input type="text" class="form-control" name="nome" value="<?php echo $_SESSION['nome_usuario'] . " " . $_SESSION['sobrenome_usuario']; ?>" id="nome" minlength="3" required/>
                     <div class="invalid-feedback">Por favor, preencha este campo.</div>
                 </div>
 
                 <!-- CPF -->
                 <div class="mb-3">
-                    <input type="text" class="form-control" name="cpf" id="cpf" minlength="11" maxlength="14"
-                        placeholder="CPF do condutor" required
-                        onkeyup="
-                let cpf = document.getElementById('cpf');
-                cpf.value = cpf.value.replace(/\D/g,'')
-                                     .replace(/(\d{3})(\d)/,'$1.$2')
-                                     .replace(/(\d{3})(\d)/,'$1.$2')
-                                     .replace(/(\d{3})(\d{1,2})$/,'$1-$2');" />
+                    <input type="text" class="form-control" name="cpf" id="cpf" value="<?php echo stripslashes($_SESSION['cpf_usuario']); ?>" required>
                     <div class="invalid-feedback">Por favor, insira um CPF válido.</div>
                 </div>
 
                 <!-- Número da CNH -->
                 <div class="mb-3">
-                    <input type="text" maxlength="9" class="form-control" name="cnh" id="cnh" minlength="5"
-                         placeholder="Número da CNH" required
-                        onkeyup="
-                let cnh = document.getElementById('cnh');
-                cnh.value = cnh.value.toUpperCase();" />
+                    <input type="text" maxlength="9" class="form-control" name="cnh" id="cnh" minlength="9"
+                         placeholder="Número da CNH" required>
                     <div class="invalid-feedback">Por favor, insira o número da CNH corretamente.</div>
                 </div>
 
@@ -275,18 +352,6 @@ include("verifySession.php");
                 nome.style.border = 'solid 2px rgb(102, 102, 102)';
             }
 
-            if(cpf.value.trim().length < 14){
-                cpf.classList.add('is-invalid');
-                cpf.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-                alert('Por favor, insira um CPF válido.');
-                event.preventDefault();
-                return false;
-            }else{
-                cpf.classList.remove('is-invalid');
-                cpf.classList.add('is-valid');
-                cpf.style.border = 'solid 2px rgb(102, 102, 102)';
-            }
-
             if(cnh.value.trim().length < 5){
                 cnh.classList.add('is-invalid');
                 cnh.style.border = 'solid 2px rgba(185, 0, 0, 1)';
@@ -313,7 +378,7 @@ include("verifySession.php");
 
             window.location.href='<?= $voltar_para ?>'
 
-        ">Próximo</button>
+        ">Cadastrar</button>
                 
             </form>
 

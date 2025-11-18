@@ -1,5 +1,5 @@
 <?php
-$voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php';
+$voltar_para = 'telainicial.php';
 include("verifySession.php");
 ?>
 

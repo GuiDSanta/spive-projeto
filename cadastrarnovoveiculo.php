@@ -1,7 +1,128 @@
 <?php
-$voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php'; // página padrão se não houver referer
+$voltar_para = 'telainicial.php';
 include("verifySession.php");
+include("conexaodb.php");
+include("verifyProprietario.php");
+
+// Conexão com banco (caso esteja faltando)
+// $conn = new mysqli("localhost","root","","spive");
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $conn = new mysqli("127.0.0.1:3307", "root", "", "spive");
+
+    if ($conn->connect_error) {
+        die("Erro de conexão: " . $conn->connect_error);
+    }
+
+    $stmt = $conn->prepare("INSERT INTO veiculo (foto, modelo, placa, marca, cor, proprietario_id, condutor_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+
+    function erro($msg)
+    {
+        echo "<script>alert('$msg'); history.back();</script>";
+        exit;
+    }
+
+    // FOTO
+    $foto = $_FILES['foto'] ?? null;
+
+    // CAMPOS (transforma tudo em maiúsculas)
+    $modelo = strtoupper(trim($_POST['modelo'] ?? ''));
+    $placa  = strtoupper(trim($_POST['placa'] ?? ''));
+    $marca  = strtoupper(trim($_POST['marca'] ?? ''));
+    $cor    = trim($_POST['corveiculo'] ?? '');
+    $proprietario_id = $_SESSION['id_usuario'];
+    $condutor_id = $_SESSION['id_usuario'];
+
+    /* ---------------------------------------------------------
+        VALIDAÇÃO DE MODELO
+    ----------------------------------------------------------*/
+    if (strlen($modelo) < 3 || !preg_match('/^[A-Za-z0-9À-ÖØ-öø-ÿ ]+$/', $modelo)) {
+        erro("O modelo deve conter ao menos 3 caracteres e não pode conter símbolos.");
+    }
+
+    /* ---------------------------------------------------------
+        VALIDAÇÃO DE MARCA
+    ----------------------------------------------------------*/
+    if (!preg_match('/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/', $marca)) {
+        erro("A marca deve conter apenas letras.");
+    }
+
+    /* ---------------------------------------------------------
+        VALIDAÇÃO DE PLACA
+    ----------------------------------------------------------*/
+    $padraoAntigo    = "/^[A-Z]{3}-[0-9]{4}$/";      // ABC-1234
+    $padraoMercosul  = "/^[A-Z]{3}-[0-9][A-Z][0-9]{2}$/"; // ABC-1D23
+
+    if (!preg_match($padraoAntigo, $placa) && !preg_match($padraoMercosul, $placa)) {
+        erro("Placa inválida! Use o formato ABC-1234 ou ABC-1D23.");
+    }
+
+    /* ---------------------------------------------------------
+        VALIDAÇÃO DE COR
+    ----------------------------------------------------------*/
+    $cores_validas = ['Azul', 'Amarelo', 'Branco', 'Cinza', 'Laranja', 'Marrom', 'Vinho', 'Verde', 'Vermelho', 'Roxo'];
+
+    // Se escolheu "Outra"
+    if ($cor === 'Outra') {
+        erro("Digite a cor no campo indicado.");
+    }
+
+    // Convertendo cor para padrão
+    $cor = ucfirst(strtolower($cor));
+
+    if ($cor === "Selecione a cor do veículo:" || $cor === "") {
+        erro("Por favor, selecione uma cor válida.");
+    }
+
+    if (!in_array($cor, $cores_validas)) {
+        if (!preg_match('/^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/', $cor)) {
+            erro("O campo cor deve conter apenas letras.");
+        }
+    }
+
+    /* ---------------------------------------------------------
+        UPLOAD DA FOTO
+    ----------------------------------------------------------*/
+    $nomeFinal = null;
+
+    if ($foto && $foto['error'] === 0) {
+
+        if ($foto['size'] > 5 * 1024 * 1024) {
+            erro("A foto não pode exceder 5MB.");
+        }
+
+        $extensao = strtolower(pathinfo($foto['name'], PATHINFO_EXTENSION));
+        $permitidos = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (!in_array($extensao, $permitidos)) {
+            erro("Formato de imagem inválido! Envie JPG, PNG ou WEBP.");
+        }
+
+        $nomeFinal = "uploads/" . uniqid("foto_") . "." . $extensao;
+        move_uploaded_file($foto['tmp_name'], $nomeFinal);
+    }
+
+    /* ---------------------------------------------------------
+        INSERÇÃO NO BANCO
+    ----------------------------------------------------------*/
+
+    // IMPORTANTE: seu código não mostra a preparação do $stmt
+    // então este trecho assume que você já fez:
+    //
+    // $stmt = $conn->prepare("INSERT INTO veiculos (foto, modelo, placa, marca, cor) VALUES (?, ?, ?, ?, ?)");
+
+    $stmt->bind_param('sssssii', $nomeFinal, $modelo, $placa, $marca, $cor, $proprietario_id, $condutor_id);
+    $stmt->execute();
+    $stmt->close();
+    $conn->close();
+
+    echo "<script>alert('Veículo cadastrado com sucesso!'); window.location.href='telainicial.php';</script>";
+    exit;
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -207,7 +328,19 @@ include("verifySession.php");
         <div class="form p-md-3">
             <br>
             <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE VEÍCULO</h1>
-            <form id="meuFormulario" class="text-center" method="post" action="cadastrarnovoveiculo2.php" novalidate onsubmit="return verificaCadastro(event);">
+            <form id="meuFormulario" class="text-center" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>" novalidate onsubmit="return verificaCadastro(event);" enctype="multipart/form-data">
+
+
+                <div class="mb-3">
+                    <div class="justify-content-start text-start mb-1">
+                        <label for="foto">Foto do Veículo</label>
+                    </div>
+                    <input type="file" class="form-control" name="foto" id="foto"
+                        accept="image/*" required />
+                    <div class="invalid-feedback">Por favor, faça o envio da foto do veículo.</div>
+                </div>
+
+
                 <div class="mb-3">
                     <input type="text" class="form-control" name="modelo" id="modelo" minlength="3" placeholder="Modelo do Veículo"
                         required onkeyup="
@@ -284,10 +417,13 @@ include("verifySession.php");
                     <div class="invalid-feedback">Por favor, preencha a cor do veículo.</div>
                 </div>
 
+                <div class="mt-3">
+                    <a href="informacoes.php">Onde encontrar essas informações?</a>
+                </div>
                 <br>
                 <br>
                 <div class="flex-row">
-                    <button type="submit" class="btn btn-primary">Próximo</button>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
 
             </form>
             <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
@@ -348,73 +484,85 @@ include("verifySession.php");
         document.getElementById('corveiculo').addEventListener('change', handleCorChange);
 
 
-function verificaCadastro(event) {
-    let corveiculo = document.getElementById('corveiculo');
-    let marca = document.getElementById('marca');
-    let modelo = document.getElementById('modelo');
-    let placa = document.getElementById('placa');
+        function verificaCadastro(event) {
+            let corveiculo = document.getElementById('corveiculo');
+            let marca = document.getElementById('marca');
+            let modelo = document.getElementById('modelo');
+            let placa = document.getElementById('placa');
+            // ---- Validação foto ----
+            let foto = document.getElementById('foto');
 
-    // Expressões regulares de validação da placa
-    const padraoAntigo = /^[A-Z]{3}-\d{4}$/;          // ABC-1234
-    const padraoMercosul = /^[A-Z]{3}-\d[A-Z]\d{2}$/; // ABC-1D23
-
-    // ---- Validação modelo ----
-    if (modelo.value.trim().length < 3) {
-        modelo.classList.add('is-invalid');
-        modelo.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Por favor, preencha o modelo do veículo com pelo menos 3 caracteres.');
-        event.preventDefault();
-        return false;
-    } else {
-        modelo.classList.remove('is-invalid');
-        modelo.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-    }
-
-    // ---- Validação placa ----
-    let valorPlaca = placa.value.trim().toUpperCase();
-
-    if (!padraoAntigo.test(valorPlaca) && !padraoMercosul.test(valorPlaca)) {
-        placa.classList.add('is-invalid');
-        placa.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Placa inválida! Use o formato ABC-1234 ou ABC-1D23.');
-        event.preventDefault();
-        return false;
-    } else {
-        placa.classList.remove('is-invalid');
-        placa.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-        placa.value = valorPlaca; // força maiúsculas
-    }
-
-    // ---- Validação marca ----
-    if (marca.value.trim().length < 3) {
-        marca.classList.add('is-invalid');
-        marca.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Por favor, preencha a marca do veículo com pelo menos 3 caracteres.');
-        event.preventDefault();
-        return false;
-    } else {
-        marca.classList.remove('is-invalid');
-        marca.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-    }
-
-    // ---- Validação cor ----
-    if (corveiculo.value === 'Selecione a cor do veículo:') {
-        corveiculo.classList.add('is-invalid');
-        corveiculo.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Por favor, selecione a cor do veículo.');
-        event.preventDefault();
-        return false;
-    } else {
-        corveiculo.classList.remove('is-invalid');
-        corveiculo.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-    }
-
-    return true;
+            if (!foto.files || foto.files.length === 0) {
+                alert('Por favor, envie a foto do veículo.');
+                foto.classList.add('is-invalid');
+                foto.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                event.preventDefault();
+                return false;
+            } else {
+                foto.classList.remove('is-invalid');
+                foto.style.border = 'solid 2px rgba(50, 122, 21, 1)';
+            }
 
 
-}
+            // Expressões regulares de validação da placa
+            const padraoAntigo = /^[A-Z]{3}-\d{4}$/; // ABC-1234
+            const padraoMercosul = /^[A-Z]{3}-\d[A-Z]\d{2}$/; // ABC-1D23
+
+            // ---- Validação modelo ----
+            if (modelo.value.trim().length < 3) {
+                modelo.classList.add('is-invalid');
+                modelo.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Por favor, preencha o modelo do veículo com pelo menos 3 caracteres.');
+                event.preventDefault();
+                return false;
+            } else {
+                modelo.classList.remove('is-invalid');
+                modelo.style.border = 'solid 2px rgba(50, 122, 21, 1)';
+            }
+
+            // ---- Validação placa ----
+            let valorPlaca = placa.value.trim().toUpperCase();
+
+            if (!padraoAntigo.test(valorPlaca) && !padraoMercosul.test(valorPlaca)) {
+                placa.classList.add('is-invalid');
+                placa.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Placa inválida! Use o formato ABC-1234 ou ABC-1D23.');
+                event.preventDefault();
+                return false;
+            } else {
+                placa.classList.remove('is-invalid');
+                placa.style.border = 'solid 2px rgba(50, 122, 21, 1)';
+                placa.value = valorPlaca; // força maiúsculas
+            }
+
+            // ---- Validação marca ----
+            if (marca.value.trim().length < 3) {
+                marca.classList.add('is-invalid');
+                marca.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Por favor, preencha a marca do veículo com pelo menos 3 caracteres.');
+                event.preventDefault();
+                return false;
+            } else {
+                marca.classList.remove('is-invalid');
+                marca.style.border = 'solid 2px rgba(50, 122, 21, 1)';
+            }
+
+            // ---- Validação cor ----
+            if (corveiculo.value === 'Selecione a cor do veículo:') {
+                corveiculo.classList.add('is-invalid');
+                corveiculo.style.border = 'solid 2px rgba(185, 0, 0, 1)';
+                alert('Por favor, selecione a cor do veículo.');
+                event.preventDefault();
+                return false;
+            } else {
+                corveiculo.classList.remove('is-invalid');
+                corveiculo.style.border = 'solid 2px rgba(50, 122, 21, 1)';
+            }
+
+            return true;
 
 
+        }
     </script>
 </body>
 <script src="js/bootstrap.min.js"></script>

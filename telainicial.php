@@ -283,7 +283,7 @@ include("verifyRegister.php");
                 
             
             <?php if (empty($veiculos)): ?>
-    <p class="text-white mt-3">Por favor, registre um veículo antes de continuar.</p>
+    <p class="text-white mt-3">Não há veículo registrados.</p>
 <?php else: ?>
     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
         
@@ -303,9 +303,9 @@ include("verifyRegister.php");
         <div class="carousel-inner">
             <?php foreach ($veiculos as $index => $veiculo): ?>
                 <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                    <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block carromobile mx-auto" alt="Carro">
+                    <img src="<?php echo htmlspecialchars($veiculo['foto']); ?>" class="d-block carromobile mx-auto m-4" alt="Carro">
                     <div class="carousel-caption d-none d-md-block">
-                        <h5 class="text-shadow fs-3">
+                        <h5 class="text-shadow fs-3 mt-5">
                             <?php echo htmlspecialchars($veiculo['marca']) . " " . htmlspecialchars($veiculo['modelo']); ?>
                         </h5>
                     </div>
@@ -330,7 +330,7 @@ include("verifyRegister.php");
     
         <div class="alinhar text-center mt-3" style="font-family: madetommy, sans-serif;">
             <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
-            <a button type="submit" class="btn btn-primary" href="opcaocadastro.php">Cadastrar Novo</a>
+            <a button type="submit" class="btn btn-primary" href="cadastrarnovoveiculo.php">Cadastrar Novo</a>
         </div>
 </body>
 <script src="js/bootstrap.min.js"></script>

@@ -182,12 +182,12 @@ include("verifySession.php");
             width: 120px;
             background-color: #16427F;
             color: white;
-            border-radius: 2px;
+            border-radius: 5px;
             display: flex;
             text-align: center;
             justify-content: center;
             align-items: center;
-            border: none;
+            border: solid 1px #000000ff;
             
         }
 
@@ -202,12 +202,13 @@ include("verifySession.php");
             background-color: #ff0000ff;
             color: white;
             padding: auto;
-            border-radius: 2px;
+            border-radius: 5px;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             border: none;
+            border: solid 1px #000000ff;
         }
 
         .btn2:active{
@@ -318,14 +319,14 @@ include("verifySession.php");
             <h5 class="mt-3">Abaixar vidros:</h5>
             <button type="button" id="vidro" class="btn1" data-bs-toggle="modal" data-bs-target="#confirmarVidro">Abaixar</button>
         </div>
-            <p>Abaixa parcialmente os vidros do veículo.</p> 
+            <p id="txt-info">Abaixar parcialmente os vidros do veículo.</p> 
             <hr>
         
         <div class="linha">    
             <h5 class="mt-3">Ar condicionado:</h5>
             <button type="button" id="Ar-botao" class="btn1" data-bs-toggle="modal" data-bs-target="#ligarAr">Ligar</button>
         </div>
-            <p>Gerencia o ar condicionado do veículo.</p>    
+            <p>Gerenciar o ar condicionado do veículo.</p>    
             <hr>
         
         <div class="linha">   
@@ -342,7 +343,7 @@ include("verifySession.php");
         <div class="alinhar text-center mt-3">
             <a button type="submit" class="btn btn-primary" href="statusveiculos.php">Voltar</a>
         </div>
-
+        <br>
 
 
     </main>
@@ -409,6 +410,8 @@ include("verifySession.php");
   let texto_ar = document.getElementById("texto_ar");
   let confirmar_sim = document.getElementById("Sim");
   
+
+  
   let emergencia = document.getElementById("emergencia");
   let texto_emergencia = document.getElementById("texto_emergencia");
   let confirmar_sim3 = document.getElementById("confirmarSim3");
@@ -450,13 +453,14 @@ include("verifySession.php");
         texto_ar.innerText = "Tem certeza que deseja desligar o Ar-condicionado?";
         var modal = bootstrap.Modal.getInstance(document.getElementById('ligarAr'));
         modal.hide();
+
         return; 
     } 
     });
 
     document.getElementById("confirmarSim3").addEventListener("click", function() {
     if(vidro.innerText === "Ligar para emergência") {
-        href = "wwww.google.com"; 
+ 
         var modal = bootstrap.Modal.getInstance(document.getElementById('confirmarVidro'));
         modal.hide();
         return; // Sai da função para evitar mudar novamente
@@ -474,3 +478,5 @@ include("verifySession.php");
 
 
 </html>
+
+

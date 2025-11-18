@@ -2,6 +2,8 @@ CREATE DATABASE spive;
 
 USE spive;
 
+drop database spive;
+
 CREATE TABLE usuario(id int PRIMARY KEY AUTO_INCREMENT,
                     nome varchar(30) NOT NULL,
                     sobrenome varchar(70) NOT NULL,
@@ -15,6 +17,19 @@ CREATE TABLE usuario(id int PRIMARY KEY AUTO_INCREMENT,
                     telefone varchar(11) NOT NULL);
    
 
+   
+CREATE TABLE proprietario(
+	id int PRIMARY KEY,
+    nome varchar(100) NOT NULL,
+    cpf char(11) NOT NULL,
+    cnh char(9) NOT NULL,
+    categoria varchar(3) NOT NULL
+);
+
+drop table veiculo;
+drop table proprietario;
+drop table dispositivo;
+
 CREATE TABLE veiculo(
 	id_veiculo int PRIMARY KEY AUTO_INCREMENT,
     placa char(7) NOT NULL,
@@ -22,10 +37,13 @@ CREATE TABLE veiculo(
     modelo varchar(30) NOT NULL,
     cor varchar(20) NOT NULL,
     proprietario_id int NOT NULL,
-    CONSTRAINT fk_proprietario FOREIGN KEY (proprietario_id) REFERENCES usuario(id),
-    CONSTRAINT fk_condutor FOREIGN KEY (condutor_id) REFERENCES usuario(id),
-    condutor_id int NOT NULL
+    FOREIGN KEY (proprietario_id) REFERENCES proprietario(id),
+	condutor_id int NOT NULL,
+    FOREIGN KEY (condutor_id) REFERENCES usuario(id)
+
 );
+
+alter table veiculo add foto varchar(500) null after cor;
  
  CREATE TABLE dispositivo(
 	id int PRIMARY KEY AUTO_INCREMENT,
@@ -48,5 +66,6 @@ CREATE TABLE veiculo(
 
 select * from usuario;
 select * from veiculo;
+select * from proprietario;
 delete from usuario WHERE email = 'gigi10.valdez@gmail.com';
 drop table usuario;

@@ -294,6 +294,7 @@ $voltar_para = 'meusveiculos.php';
             <a button type="submit" class="btn btn-primary" href="acoesVeiculos.php">Ações</a>
             <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
         </div>
+        <br>
 
 
 

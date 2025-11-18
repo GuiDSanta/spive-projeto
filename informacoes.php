@@ -1,7 +1,14 @@
 <?php
 $voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php'; // página padrão se não houver referer
-include("verifySession.php");
+session_start();
+
+if (!isset($_SESSION["id_usuario"]) || !isset($_SESSION["nome_usuario"]) || !isset($_SESSION["email_usuario"])) {
+    $_SESSION["nome_usuario"] = "Faça Login";
+    $_SESSION["sobrenome_usuario"] = "";
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -27,33 +34,10 @@ include("verifySession.php");
             /* ou italic */
         }
 
+
         .container {
             font-family: madetommy, sans-serif;
-            background-color: white;
-        }
-
-        .icones {
-            width: 32px;
-            height: 32px;
-            margin: 10px;
-        }
-
-        .icones2 {
-            width: 36px;
-            height: 32px;
-            margin: 8px;
-        }
-
-        .icones3 {
-            width: 80px;
-            height: 80px;
-            margin: 8px;
-            margin-top: 35px;
-        }
-
-        .icones4 {
-            width: 32px;
-            height: 32px;
+            background-color: rgb(240, 240, 240);
         }
 
         body {
@@ -62,7 +46,7 @@ include("verifySession.php");
         }
 
         .LogoSpive {
-            height: 160px;
+            height: 260px;
             background-color: #16427F;
         }
 
@@ -107,28 +91,92 @@ include("verifySession.php");
         }
 
         .esqueci {
-            margin-top: 30px;
+            margin-top: 130px;
         }
 
-        select {
-            height: 48px;
-            width: 304px;
-            border: solid 2px rgb(102, 102, 102);
-            box-shadow: 2px 2px 3px 0px grey;
+        .icones {
+            width: 32px;
+            height: 32px;
+            margin: 10px;
+        }
+
+        .icones2 {
+            width: 36px;
+            height: 32px;
+            margin: 8px;
+        }
+
+        .icones3 {
+            width: 80px;
+            height: 80px;
+            margin: 8px;
+            margin-top: 35px;
+        }
+
+        .icones4 {
+            width: 32px;
+            height: 32px;
+        }
+
+        .fotoperfil {
+            width: 140px;
+            height: 140px;
+            margin-top: 10px;
+        }
+
+        .usuario {
+            color: #e9e9e9ff;
+            margin-top: 160px;
+        }
+
+        .usuario2 {
+            color: #437ECA;
+            ;
+            margin-top: 180px;
+        }
+
+        .carros {
+            width: 350px;
+            height: 202px;
+            border-radius: 6px;
+            border: 1px solid black;
+        }
+
+        .jeferson {
+            margin-top: 10px;
+            margin-left: 250px;
+        }
+
+        .imgcarro {
+            width: 246px;
+            height: 136px;
+        }
+
+        img {
+            width: 256px;
+            height: 226px;
+        }
+
+        hr {
+            color: #000000ff;
+        }
+
+        .carros {
+            max-width: 300px;
+            max-height: 300px;
+            width: 70%;
+            height: auto;
+            border: none;
+            margin: 1px;
         }
     </style>
 </head>
 
 <body>
-
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-        </symbol>
-    </svg>
-
-
     <div class="LogoSpive">
+        <div class="text-center">
+            <img src="img/Spive (2048 x 2048 px) (1).png" alt="" class="carros" width="180px" height="300px">
+        </div>
         <div class="row">
 
             <a data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"><img src="img/menu_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" class="icones position-absolute top-0 start-0 bg-transparent" width="32px" height="32px" alt=""></a>
@@ -159,7 +207,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="nav-link active" aria-current="page">
+                            <a href="cadastrarnovoveiculo.php" class="nav-link link-dark">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle mb-1" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
@@ -168,7 +216,7 @@ include("verifySession.php");
                             </a>
                         </li>
                         <li>
-                            <a href="saibamais.php" class="nav-link link-dark">
+                            <a href="saibamais.php" class="nav-link link-dark" aria-current="page">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-right" viewBox="0 0 16 16">
                                     <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" />
                                 </svg>
@@ -191,136 +239,44 @@ include("verifySession.php");
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
                             <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
-                            <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
+                            <strong><?php echo ($_SESSION['nome_usuario'])." ".($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
 
+
                 </div>
+            </div>
+
+    </div>
+    <main class="container">
+        <div class="container py-5">
+            <h1 class="text-center mb-5">INFORMAÇÕES DO VEÍCULO</h1>
+            <div class="row g-4">
+
+
+                <!-- Card sobre a aplicação -->
+                <div class="col-md-6">
+                    <div class="card card-rounded shadow-sm h-100 p-4">
+                        <h3 class="h5">Onde encontrar?</h3>
+                        <p>Todas as informações requeridas podem ser encontradas em seu documento da <a style="text-decoration: underline;">CNH.</a></p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-rounded shadow-sm h-100 p-4">
+                        <h3 class="h5">Como enviar a foto?</h3>
+                        <p>Faça o envio de uma foto do veículo centralizado, sendo possível visualizar a <a style="text-decoration: underline;">frente e sua placa.</a></p>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="justify-content-center d-flex">
+                <button type="button" class="btn btn-primary text-center mt-3 " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
             </div>
         </div>
 
-        <div class="text-center">
-            <img src="img/Spive (2048 x 2048 px) (1).png" alt="" class="" width="180px" height="180px">
-        </div>
-    </div>
-    <main class="container">
-        <div class="form p-md-3">
-            <br>
-            <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO DE VEÍCULO</h1>
-            <form id="meuFormulario" class="text-center" method="post" action="cadastrarnovoveiculo2.php" novalidate onsubmit="return verificaCadastro(event);">
-                <div class="mb-3">
-                    <div class="justify-content-start text-start mb-1">
-                    <label for="foto">Fotos do Veículo</label>
-                    </div>
-                    <input type="file" class="form-control" name="foto[]" id="foto" 
-                        accept="image/*" multiple required />
-                </div>
-
-                <div class="mb-3">
-                    <div class="justify-content-start text-start mb-1">
-                    <label for="fotoc">Foto do Comprovante de Residência</label>
-                    </div>
-                    <input type="file" class="form-control" name="fotoc" id="fotoc" 
-                        accept="image/*" required />
-                </div>
-
-                <div class="mb-3">
-                    <input type="number" class="form-control" name="numchassi" id="numchassi" minlength="17" maxlength="17"
-                        placeholder="Número do Chassi" required/>
-                        
-                </div>
-
-                <div class="mb-3">
-                    <input type="number" class="form-control" name="nummotor" id="nummotor" minlength="17" maxlength="17"
-                        placeholder="Número do Motor" required/>
-                        
-                </div>
-
-                <br>
-                <br>
-                <div class="flex-row">
-                    <button type="submit" class="btn btn-primary">Cadastrar</button>
-
-            </form>
-            <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
-        </div>
-        </div>
-
-    </main>
-    <script>
-        
-
-function verificaCadastro(event) {
-    let corveiculo = document.getElementById('corveiculo');
-    let numchassi = document.getElementById('numchassi');
-    let foto = document.getElementById('foto');
-    let placa = document.getElementById('placa');
-
-    // Expressões regulares de validação da placa
-    const padraoAntigo = /^[A-Z]{3}-\d{4}$/;          // ABC-1234
-    const padraoMercosul = /^[A-Z]{3}-\d[A-Z]\d{2}$/; // ABC-1D23
-
-    // ---- Validação foto ----
-    if (foto.value.trim().length < 3) {
-        foto.classList.add('is-invalid');
-        foto.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Por favor, preencha o campo de foto do veículo com pelo menos 1 foto.');
-        event.preventDefault();
-        return false;
-    } else {
-        foto.classList.remove('is-invalid');
-        foto.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-    }
-
-    if (fotoc.value.trim().length < 3) {
-        fotoc.classList.add('is-invalid');
-        fotoc.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Por favor, preencha o campo de comprovante de residência com pelo menos 1 foto.');
-        event.preventDefault();
-        return false;
-    } else {
-        fotoc.classList.remove('is-invalid');
-        fotoc.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-    }
-
-    // ---- Validação numchassi ----
-    if (numchassi.value.trim().length < 3) {
-        numchassi.classList.add('is-invalid');
-        numchassi.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Por favor, preencha o número do chassi do veículo com 17 caracteres.');
-        event.preventDefault();
-        return false;
-    } else {
-        numchassi.classList.remove('is-invalid');
-        numchassi.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-    }
-
-    // ---- Validação numchassi ----
-    if (nummotor.value.trim().length < 3) {
-        nummotor.classList.add('is-invalid');
-        nummotor.style.border = 'solid 2px rgba(185, 0, 0, 1)';
-        alert('Por favor, preencha o número do motor do veículo com 17 caracteres.');
-        event.preventDefault();
-        return false;
-    } else {
-        nummotor.classList.remove('is-invalid');
-        nummotor.style.border = 'solid 2px rgba(50, 122, 21, 1)';
-    }
-
-    window.location.href = 'telainicial.php';
-    return true;
-
-}
-
-
-    </script>
 </body>
 <script src="js/bootstrap.min.js"></script>
 
-
 </html>
-
-
-
-
-

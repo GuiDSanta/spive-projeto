@@ -61,7 +61,6 @@ foreach ($veiculos as $veiculo) {
 $stmt->close();
 
 
-
 $sql = "SELECT * FROM veiculo WHERE proprietario_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
@@ -73,29 +72,33 @@ while ($row = $result->fetch_assoc()) {
     $veiculos[] = $row;
 }
 
-// 2️⃣ Verificar se há veículos
+// 2️⃣ Verificar se há veículos (apenas para exibição, sem interrupção)
 if (count($veiculos) === 0) {
-    echo "<p>Por favor, registre um veículo antes de continuar.</p>";
-    exit;
+    //echo "<p>Você não possui nenhum veículo cadastrado. O fluxo continuará, mas sem buscar dispositivos.</p>";
+    
+    // Você pode definir variáveis como vazias ou nulas aqui para evitar erros futuros
+    $dispositivo = [];
+    $id_veiculo = null; 
+} else {
+    // ESTE BLOCO SÓ RODA SE HOUVER VEÍCULOS
+    
+    // 3️⃣ Buscar dispositivos do primeiro veículo
+    // Agora só tentamos acessar $veiculos[0] se soubermos que ele existe (no 'else')
+    $id_veiculo = $veiculos[0]['id_veiculo']; 
+    $sql = "SELECT * FROM dispositivo WHERE veiculo_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id_veiculo);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $dispositivo = [];
+    while ($row = $result->fetch_assoc()) {
+        $dispositivo[] = $row;
+    }
+    /*
+    // 4️⃣ Caso não haja dispositivo registrado (apenas para exibição, sem interrupção)
+    if (count($dispositivo) === 0) {
+        echo "<p>⚠️ O veículo '{$veiculos[0]['modelo']}' não possui dispositivos registrados.</p>";
+    }*/
 }
-
-// 3️⃣ Buscar dispositivos do primeiro veículo (ou todos, se quiser)
-$id_veiculo = $veiculos[0]['id_veiculo'];
-$sql = "SELECT * FROM dispositivo WHERE veiculo_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_veiculo);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$dispositivo = [];
-while ($row = $result->fetch_assoc()) {
-    $dispositivo[] = $row;
-}
-
-// 4️⃣ Caso não haja dispositivo registrado
-if (count($dispositivo) === 0) {
-    echo "<p>Por favor, registre um dispositivo para o veículo antes de continuar.</p>";
-    exit;
-}
-
 ?>

@@ -101,7 +101,7 @@
             <h1 class="text-center mb-3" style="font-family: madetommyM;">CADASTRO</h1>
             <form id="formCadastro" class="text-center"  method="post" novalidate>
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="cep" name="cep" oninput="buscarCep()" placeholder="CEP"
+                    <input type="number" class="form-control" id="cep" name="cep" oninput="buscarCep()" placeholder="CEP"
                         required maxlength="8" />
                     <div class="invalid-feedback">CEP deve conter exatamente 8 números.</div>
                 </div>
@@ -113,20 +113,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <input type="text" class="form-control" id="numero" name="numero" placeholder="Número" required
+                    <input type="number" class="form-control" id="numero" name="numero" placeholder="Número" required
                         maxlength="6" />
                     <div class="invalid-feedback">Número inválido! Use até 6 dígitos numéricos.</div>
                 </div>
 
                 <div class="mb-3">
                     <input type="text" class="form-control" name="cpf" id="cpf" minlength="11" maxlength="14"
-                        placeholder="CPF" required
-                        onkeyup="
-                let cpf = document.getElementById('cpf');
-                cpf.value = cpf.value.replace(/\D/g,'')
-                                     .replace(/(\d{3})(\d)/,'$1.$2')
-                                     .replace(/(\d{3})(\d)/,'$1.$2')
-                                     .replace(/(\d{3})(\d{1,2})$/,'$1-$2');" />
+                        placeholder="CPF" required />
                     <div class="invalid-feedback">Por favor, insira um CPF válido.</div>
                 </div>
 
@@ -226,136 +220,113 @@
     }
 
     document.getElementById("formCadastro").addEventListener("submit", async function (e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const cepElem = document.getElementById("cep");
-        const logradouroElem = document.getElementById("logradouro");
-        const numeroElem = document.getElementById("numero");
-        const cpfElem = document.getElementById("cpf");
-        const nascimentoElem = document.getElementById("nascimento");
-        const telefoneElem = document.getElementById("telefone");
+    const cepElem = document.getElementById("cep");
+    const logradouroElem = document.getElementById("logradouro");
+    const numeroElem = document.getElementById("numero");
+    const cpfElem = document.getElementById("cpf");
+    const nascimentoElem = document.getElementById("nascimento");
+    const telefoneElem = document.getElementById("telefone");
 
-        const cep = cepElem.value.trim();
-        const logradouro = logradouroElem.value.trim();
-        const numero = numeroElem.value.trim();
-        const cpf = cpfElem.value.trim();
-        const nascimento = nascimentoElem.value;
-        const telefone = telefoneElem.value.trim();
+    const cep = cepElem.value.trim();
+    const logradouro = logradouroElem.value.trim();
+    const numero = numeroElem.value.trim();
+    const cpf = cpfElem.value.trim();
+    const nascimento = nascimentoElem.value;
+    const telefone = telefoneElem.value.trim();
 
-        // Validações com feedback
-        const cepValido = validarCampo(cepElem, /^\d{8}$/.test(cep));
-        const logradouroValido = validarCampo(logradouroElem, validarLogradouro(logradouro));
-        const numeroValido = validarCampo(numeroElem, /^\d{1,6}$/.test(numero));
-        const cpfValido = validarCampo(cpfElem, /^\d{11}$/.test(cpf));
-        const nascimentoValido = validarCampo(nascimentoElem, validarDataNascimento(nascimento));
-        const telefoneValido = validarCampo(telefoneElem, /^\d{10,11}$/.test(telefone));
+    // Validações
+    const cepValido = validarCampo(cepElem, /^\d{8}$/.test(cep));
+    const logradouroValido = validarCampo(logradouroElem, validarLogradouro(logradouro));
+    const numeroValido = validarCampo(numeroElem, /^\d{1,6}$/.test(numero));
+    let cpfValido = validarCampo(cpfElem, /^\d{11}$/.test(cpf)); // CORRIGIDO (let)
+    const nascimentoValido = validarCampo(nascimentoElem, validarDataNascimento(nascimento));
+    const telefoneValido = validarCampo(telefoneElem, /^\d{10,11}$/.test(telefone));
 
-        if (cpf !== "") {
-            try {
-                const response = await fetch('verificar_cpf.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `cpf=${encodeURIComponent(cpf)}`
-                });
-
-                const data = await response.json();
-                if (data.existe) {
-                    cpfElem.classList.add("is-invalid");
-                    cpfElem.nextElementSibling.textContent = "O CPF já está em uso.";
-                    cpfValido = false;
-                } else {
-                    cpfValido = true;
-                }
-            } catch (error) {
-                console.error('Erro ao verificar o cpf:', error);
-            }
-        } 
-        // Se algum campo for inválido, foca no primeiro inválido e não envia o formulário
-
-        if (!cepValido) return cepElem.focus();
-        if (!logradouroValido) return logradouroElem.focus();
-        if (!numeroValido) return numeroElem.focus();
-        if (!cpfValido) return cpfElem.focus();
-        if (!nascimentoValido) return nascimentoElem.focus();
-        if (!telefoneValido) return telefoneElem.focus();
-
-        
-        // Dados da etapa 2
-        const dadosEtapa2 = { cep, logradouro, numero, cpf, nascimento, telefone };
-
-        // Recupera dados da etapa 1
-        const dadosEtapa1String = localStorage.getItem("dadosEtapa1");
-        if (!dadosEtapa1String) {
-            alert("Você precisa completar a primeira etapa do cadastro.");
-            window.location.href = "cadastro1.php"; // ajuste conforme seu fluxo
-            return;
-        }
-
-        let dadosCompletos;
+    // Verificação de CPF no servidor
+    if (cpf !== "" && cpfValido) {
         try {
-            const dadosEtapa1 = JSON.parse(dadosEtapa1String);
-            dadosCompletos = { ...dadosEtapa1, ...dadosEtapa2 };
-        } catch (err) {
-            console.error("Erro ao processar os dados da primeira etapa:", err);
-            alert("Erro interno ao ler os dados da primeira etapa.");
-            return;
+            const response = await fetch('verificar_cpf.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `cpf=${encodeURIComponent(cpf)}`
+            });
+
+            const data = await response.json();
+            if (data.existe) {
+                cpfElem.classList.add("is-invalid");
+                cpfElem.nextElementSibling.textContent = "O CPF já está em uso.";
+                cpfValido = false;
+                return cpfElem.focus();
+            }
+        } catch (error) {
+            console.error('Erro ao verificar o cpf:', error);
+            return alert("Erro ao validar CPF.");
         }
+    }
 
-        const self = this;
+    // Se algum campo for inválido
+    if (!cepValido) return cepElem.focus();
+    if (!logradouroValido) return logradouroElem.focus();
+    if (!numeroValido) return numeroElem.focus();
+    if (!cpfValido) return cpfElem.focus();
+    if (!nascimentoValido) return nascimentoElem.focus();
+    if (!telefoneValido) return telefoneElem.focus();
 
-        fetch('processaCadastro.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ data: dadosCompletos }) // Enviando os dados como formulário
-        })
-        .then(response => {
-            if (!response.ok) {
-                // Lança erro para ser capturado no catch
-                throw new Error(`HTTP status ${response.status}`);
-            }
-            return response.text(); // ou .json(), dependendo do que o PHP retorna
-        })
-        .then(result => {
+    // Dados da etapa 2
+    const dadosEtapa2 = { cep, logradouro, numero, cpf, nascimento, telefone };
+
+    // Recuperação dos dados da etapa 1
+    const dadosEtapa1String = localStorage.getItem("dadosEtapa1");
+    if (!dadosEtapa1String) {
+        alert("Você precisa completar a primeira etapa do cadastro.");
+        return (window.location.href = "cadastro1.php");
+    }
+
+    let dadosCompletos;
+    try {
+        const dadosEtapa1 = JSON.parse(dadosEtapa1String);
+        dadosCompletos = { ...dadosEtapa1, ...dadosEtapa2 };
+    } catch (err) {
+        console.error("Erro ao processar os dados da primeira etapa:", err);
+        alert("Erro interno ao ler os dados da primeira etapa.");
+        return (window.location.href = "cadastro1.php");
+    }
+
+    const self = this;
+
+    // Envio final dos dados ao servidor
+    fetch('processaCadastro.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: dadosCompletos })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Erro ao enviar dados.');
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
             alert("Dados cadastrados com sucesso!");
-            self.reset(); // Reseta o formulário
+            self.reset();
 
-            // Remover a classe "is-valid" dos campos
-            [cepElem, logradouroElem, numeroElem, cpfElem, nascimentoElem, telefoneElem].forEach(input => {
-                input.classList.remove("is-valid");
-            });
+            // Remove classes de validação
+            [cepElem, logradouroElem, numeroElem, cpfElem, nascimentoElem, telefoneElem]
+                .forEach(input => input.classList.remove("is-valid"));
 
-            // Limpa o armazenamento local
+            // Limpa o localStorage
             localStorage.clear();
 
-            // Redireciona para a página inicial
             window.location.href = "index.php";
-        })
-        .catch(error => {
-            let errorMessage = "Erro desconhecido. Tente novamente mais tarde.";
-
-            if (error.message.includes("403")) {
-                errorMessage = "Erro 403: Acesso proibido.";
-            } else if (error.message.includes("500")) {
-                errorMessage = "Erro 500: Erro interno do servidor.";
+        } else {
+            alert("Erro ao cadastrar: " + (data.message || "Erro desconhecido."));
+            if(data.message == 'Email já cadastrado'){
+                window.location.href = "cadastro1.php";
             }
-
-            alert(errorMessage);
-            self.reset(); // Reseta o formulário
-
-            // Remover a classe "is-valid" dos campos
-            [cepElem, logradouroElem, numeroElem, cpfElem, nascimentoElem, telefoneElem].forEach(input => {
-                input.classList.remove("is-valid");
-            });
-
-            // Limpa o armazenamento local
-            localStorage.clear();
-
-            // Redireciona para a página inicial
-            window.location.href = "index.php";
-        });
-    });
+        }
+    })
+});
 </script>
 
 
