@@ -269,7 +269,10 @@ $result = $stmt->get_result();
     <br>
     <h3 class="text-center">Meus Veículos</h3>
 
-    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="<?php echo $_SESSION['foto_perfil'] ?>" style="border-radius: 50%;">
+    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x"
+     src="<?php echo $_SESSION['foto_perfil']; ?>"
+     width="120" height="120"
+     style="border-radius: 50%; object-fit: cover;">
     <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
     <a href="perfil.php" class="usuario2 position-absolute top-0 start-50 translate-middle-x">Editar Perfil</a>
     </div>
@@ -284,7 +287,7 @@ $result = $stmt->get_result();
                 <div class="col-4">
                     <img src="<?= $veiculo['foto'] ?? 'default.png' ?>" 
                          class="img-fluid rounded-start imagemcard" 
-                         style="background-color: gray; width: 200px; height: 100px;" alt="">
+                         style="background-color: gray; object-fit: cover  ; height: 100px;" alt="">
                 </div>
                 <div class="col-8">
                     <div class="card-body mt-2">
@@ -314,7 +317,7 @@ $result = $stmt->get_result();
         </div>
         <div class="col-8">
             <div class="card-body mt-1">
-                <h5 class="card-title text-dark">Adicionar Novo</h5>
+                <h5 class="card-title text-dark" style="padding-top:15px;">Adicionar Novo</h5>
             </div>
         </div>
     </div>

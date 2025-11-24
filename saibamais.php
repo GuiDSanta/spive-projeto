@@ -238,119 +238,122 @@ if (!isset($_SESSION["id_usuario"]) || !isset($_SESSION["nome_usuario"]) || !iss
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
-                            <strong><?php echo ($_SESSION['nome_usuario'])." ".($_SESSION['sobrenome_usuario']); ?></strong>
+                            <img src="<?php if ($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png') {
+                                            echo 'img/3364044.png';
+                                        } else {
+                                            echo $_SESSION['foto_perfil'];
+                                        } ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
 
-
                 </div>
             </div>
-
-    </div>
-    <main class="container">
-        <div class="container py-5">
-            <h1 class="text-center mb-5">Saiba Mais</h1>
-            <div class="row g-4">
-
-
-                <!-- Card sobre a aplicação -->
-                <div class="col-md-6">
-                    <div class="card card-rounded shadow-sm h-100 p-4">
-                        <h3 class="h5">Sobre a Aplicação</h3>
-                        <p>O <strong>Spive</strong> é uma aplicação desenvolvida com o objetivo de <strong>proteger
-                                vidas dentro de veículos</strong> — sejam elas de crianças, animais de estimação ou
-                            qualquer outro ser vivo que possa ser esquecido em carros, vans ou utilitários. A proposta é
-                            permitir que até veículos mais simples possam integrar o sistema, ampliando a segurança de
-                            forma prática e acessível.</p>
-                    </div>
-                </div>
-
-
-                <!-- Card recursos de monitoramento -->
-                <div class="col-md-6">
-                    <div class="card card-rounded shadow-sm h-100 p-4">
-                        <h3 class="h5">Recursos de Monitoramento</h3>
-                        <ul>
-                            <li>Monitoramento de <strong>oxigênio (O₂)</strong> e <strong>dióxido de carbono
-                                    (CO₂)</strong>;</li>
-                            <li>Medição da <strong>temperatura</strong> interna do veículo;</li>
-                            <li><strong>Sensor de presença</strong> para detectar ocupantes ou movimentação;</li>
-                            <li>Envio de <strong>notificações em tempo real</strong> ao usuário.</li>
-                        </ul>
-                    </div>
-                </div>
-
-
-                <!-- Card ações automáticas -->
-                <div class="col-md-6">
-                    <div class="card card-rounded shadow-sm h-100 p-4">
-                        <h3 class="h5">Ações Automáticas</h3>
-                        <p>Em situações de risco, o Spive pode acionar medidas automáticas visando reduzir o perigo para
-                            o ocupante:</p>
-                        <ul>
-                            <li>Abertura leve das janelas para ventilação;</li>
-                            <li>Acionamento do ar-condicionado (quando disponível no veículo);</li>
-                            <li>Rotinas configuráveis pelo usuário.</li>
-                        </ul>
-                    </div>
-                </div>
-
-
-                <!-- Card conta de acesso -->
-                <div class="col-md-6">
-                    <div class="card card-rounded shadow-sm h-100 p-4">
-                        <h3 class="h5">Conta e Acesso</h3>
-                        <p>Para utilizar o Spive e receber alertas personalizados é <strong>necessário possuir uma
-                                conta</strong>. A conta permite:</p>
-                        <ul>
-                            <li>Associar veículos e sensores ao perfil do usuário;</li>
-                            <li>Configurar níveis de alerta e ações automáticas;</li>
-                            <li>Receber notificações em tempo real via aplicativo ou e-mail.</li>
-                        </ul>
-                    </div>
-                </div>
-
-
-                <!-- Card segurança de dados -->
-                <div class="col-md-12">
-                    <div class="card card-rounded shadow-sm h-100 p-4">
-                        <h3 class="h5">Segurança de Dados</h3>
-                        <p>O Spive é um projeto acadêmico em desenvolvimento e não deve ser utilizado como meio oficial
-                            de armazenamento de informações pessoais. Recomendamos fortemente que <strong>não insira
-                                dados sensíveis ou reais</strong> durante o cadastro, tais como:</p>
-                        <ul>
-                            <li>Nome completo verdadeiro;</li>
-                            <li>Documentos (CPF, RG, CNH, etc.);</li>
-                            <li>Endereço residencial;</li>
-                            <li>Senhas utilizadas em outros serviços;</li>
-                            <li>Informações bancárias ou financeiras.</li>
-                        </ul>
-                        <p>Utilize <strong>informações fictícias</strong> ao interagir com o sistema. O objetivo do
-                            Spive é demonstrar funcionalidades técnicas para fins de estudo, e não oferecer uma
-                            plataforma de uso comercial.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="card card-rounded shadow-sm h-100 p-4">
-                        <h3 class="h5">Equipe de Desenvolvimento</h3>
-                        <p>O Spive é um projeto desenvolvido pela <strong>equipe MegaDev</strong>, formada por
-                            estudantes do <strong>SENAI</strong>. Nossa missão é aplicar os conhecimentos adquiridos
-                            durante a formação para criar soluções tecnológicas que tenham impacto positivo na
-                            sociedade.</p>
-                        <p>Este trabalho reflete o esforço colaborativo de todos os integrantes do grupo, que uniram
-                            suas habilidades em programação, eletrônica e design de sistemas para construir uma
-                            aplicação inovadora e acessível.</p>
-                    </div>
-                </div>
-
-
-            </div>
-            <div class="justify-content-center d-flex">
-                <button type="button" class="btn btn-primary text-center mt-3 " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
-            </div>
+            <a href="telainicial.php"><img src="img/home_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" class="icones2 position-absolute top-0 end-0 bg-transparent" width="32px" height="32px" alt=""></a>
         </div>
+        <main class="container">
+            <div class="container py-5">
+                <h1 class="text-center mb-5">Saiba Mais</h1>
+                <div class="row g-4">
+
+
+                    <!-- Card sobre a aplicação -->
+                    <div class="col-md-6">
+                        <div class="card card-rounded shadow-sm h-100 p-4">
+                            <h3 class="h5">Sobre a Aplicação</h3>
+                            <p>O <strong>Spive</strong> é uma aplicação desenvolvida com o objetivo de <strong>proteger
+                                    vidas dentro de veículos</strong> — sejam elas de crianças, animais de estimação ou
+                                qualquer outro ser vivo que possa ser esquecido em carros, vans ou utilitários. A proposta é
+                                permitir que até veículos mais simples possam integrar o sistema, ampliando a segurança de
+                                forma prática e acessível.</p>
+                        </div>
+                    </div>
+
+
+                    <!-- Card recursos de monitoramento -->
+                    <div class="col-md-6">
+                        <div class="card card-rounded shadow-sm h-100 p-4">
+                            <h3 class="h5">Recursos de Monitoramento</h3>
+                            <ul>
+                                <li>Monitoramento de <strong>oxigênio (O₂)</strong> e <strong>dióxido de carbono
+                                        (CO₂)</strong>;</li>
+                                <li>Medição da <strong>temperatura</strong> interna do veículo;</li>
+                                <li><strong>Sensor de presença</strong> para detectar ocupantes ou movimentação;</li>
+                                <li>Envio de <strong>notificações em tempo real</strong> ao usuário.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <!-- Card ações automáticas -->
+                    <div class="col-md-6">
+                        <div class="card card-rounded shadow-sm h-100 p-4">
+                            <h3 class="h5">Ações Automáticas</h3>
+                            <p>Em situações de risco, o Spive pode acionar medidas automáticas visando reduzir o perigo para
+                                o ocupante:</p>
+                            <ul>
+                                <li>Abertura leve das janelas para ventilação;</li>
+                                <li>Acionamento do ar-condicionado (quando disponível no veículo);</li>
+                                <li>Rotinas configuráveis pelo usuário.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <!-- Card conta de acesso -->
+                    <div class="col-md-6">
+                        <div class="card card-rounded shadow-sm h-100 p-4">
+                            <h3 class="h5">Conta e Acesso</h3>
+                            <p>Para utilizar o Spive e receber alertas personalizados é <strong>necessário possuir uma
+                                    conta</strong>. A conta permite:</p>
+                            <ul>
+                                <li>Associar veículos e sensores ao perfil do usuário;</li>
+                                <li>Configurar níveis de alerta e ações automáticas;</li>
+                                <li>Receber notificações em tempo real via aplicativo ou e-mail.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <!-- Card segurança de dados -->
+                    <div class="col-md-12">
+                        <div class="card card-rounded shadow-sm h-100 p-4">
+                            <h3 class="h5">Segurança de Dados</h3>
+                            <p>O Spive é um projeto acadêmico em desenvolvimento e não deve ser utilizado como meio oficial
+                                de armazenamento de informações pessoais. Recomendamos fortemente que <strong>não insira
+                                    dados sensíveis ou reais</strong> durante o cadastro, tais como:</p>
+                            <ul>
+                                <li>Nome completo verdadeiro;</li>
+                                <li>Documentos (CPF, RG, CNH, etc.);</li>
+                                <li>Endereço residencial;</li>
+                                <li>Senhas utilizadas em outros serviços;</li>
+                                <li>Informações bancárias ou financeiras.</li>
+                            </ul>
+                            <p>Utilize <strong>informações fictícias</strong> ao interagir com o sistema. O objetivo do
+                                Spive é demonstrar funcionalidades técnicas para fins de estudo, e não oferecer uma
+                                plataforma de uso comercial.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card card-rounded shadow-sm h-100 p-4">
+                            <h3 class="h5">Equipe de Desenvolvimento</h3>
+                            <p>O Spive é um projeto desenvolvido pela <strong>equipe MegaDev</strong>, formada por
+                                estudantes do <strong>SENAI</strong>. Nossa missão é aplicar os conhecimentos adquiridos
+                                durante a formação para criar soluções tecnológicas que tenham impacto positivo na
+                                sociedade.</p>
+                            <p>Este trabalho reflete o esforço colaborativo de todos os integrantes do grupo, que uniram
+                                suas habilidades em programação, eletrônica e design de sistemas para construir uma
+                                aplicação inovadora e acessível.</p>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="justify-content-center d-flex">
+                    <button type="button" class="btn btn-primary text-center mt-3 " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
+                </div>
+            </div>
 
 </body>
 <script src="js/bootstrap.min.js"></script>

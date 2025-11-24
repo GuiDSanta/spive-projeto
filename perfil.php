@@ -321,16 +321,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div>
             <a class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <?php
-                $foto = $_SESSION['foto_perfil'] ?? 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png';
-                ?>
-                <img
-                    class="fotoperfil position-absolute top-0 start-50 translate-middle-x"
-                    src="<?= $foto ?>"
-                    id="fotoperfil"
-                    style="cursor: pointer; border-radius:50%;"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalFotoPerfil">
+                <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x"
+     src="<?php echo $_SESSION['foto_perfil']; ?>"
+     width="120" height="120"
+     style="border-radius: 50%; object-fit: cover;"
+     data-bs-toggle="modal"
+                    data-bs-target="#modalFotoPerfil"   
+                    id="fotoperfil">
 
 
             </a>

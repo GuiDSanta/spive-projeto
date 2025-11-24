@@ -1,5 +1,9 @@
 <?php
-// criar_dispositivo.php
+// Inicie a sessão
+include_once 'verifySessionTecnico.php';
+include_once 'conexaodb.php';
+
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -65,7 +69,7 @@ render:
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-6">
-
+            <h1 class="text-center mb-5">Área Técnico</h1>
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center">
                     <h4 class="my-2">Criar Registro do Dispositivo (JSON)</h4>
@@ -151,30 +155,15 @@ render:
 
                 </div>
             </div>
-
-            <!-- Exibição da resposta -->
-            <?php if (isset($response) && $response !== null): ?>
-                <div class="card shadow-sm mt-4">
-                    <div class="card-header bg-info text-white">
-                        <strong>Resposta do servidor</strong>
-                    </div>
-                    <div class="card-body">
-                        <pre class="bg-light p-3 border rounded"><?php echo htmlspecialchars($response); ?></pre>
-                        <p><strong>Código HTTP:</strong> <?php echo isset($http_code) ? $http_code : 'n/a'; ?></p>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <!-- Erro CURL -->
-            <?php if (!empty($curl_error)): ?>
-                <div class="alert alert-danger mt-4">
-                    <strong>Erro cURL:</strong><br>
-                    <?php echo htmlspecialchars($curl_error); ?>
-                    <hr>
-                    Verifique se <strong>RECEIVE_URL</strong> está correto e se o servidor está rodando.
-                </div>
-            <?php endif; ?>
-
+            <div>
+                <a href="logout.php" class="nav-link link-dark text-center mt-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-box-arrow-left mb-1" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
+                                    <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z" />
+                                </svg>
+                                Sair
+                            </a>
+            </div>
         </div>
     </div>
 </div>

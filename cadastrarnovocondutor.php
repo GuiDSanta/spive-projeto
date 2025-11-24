@@ -284,6 +284,7 @@ if(empty($categoria)|| $categoria === 'Selecione a categoria da CNH:') {
                 </div>
             </div>
         </div>
+        <a href="telainicial.php"><img src="img/home_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.png" class="icones2 position-absolute top-0 end-0 bg-transparent" width="32px" height="32px" alt=""></a>
 
         <div class="text-center">
             <img src="img/Spive (2048 x 2048 px) (1).png" alt="" class="" width="180px" height="180px">

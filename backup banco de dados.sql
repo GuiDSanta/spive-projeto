@@ -14,8 +14,8 @@ CREATE TABLE usuario(id int PRIMARY KEY AUTO_INCREMENT,
                     numero char(10) NOT NULL,
                     cpf char(11) NOT NULL UNIQUE,
                     nascimento date NOT NULL,
-                    telefone varchar(11) NOT NULL);
-   
+                    telefone varchar(11) NOT NULL,
+                    foto_perfil VARCHAR(255) NULL);
 
    
 CREATE TABLE proprietario(
@@ -32,18 +32,17 @@ drop table dispositivo;
 
 CREATE TABLE veiculo(
 	id_veiculo int PRIMARY KEY AUTO_INCREMENT,
-    placa char(7) NOT NULL,
+    placa char(8) NOT NULL,
     marca varchar(20) NOT NULL,
     modelo varchar(30) NOT NULL,
     cor varchar(20) NOT NULL,
+    foto varchar(500) null,
     proprietario_id int NOT NULL,
     FOREIGN KEY (proprietario_id) REFERENCES proprietario(id),
 	condutor_id int NOT NULL,
     FOREIGN KEY (condutor_id) REFERENCES usuario(id)
 
 );
-
-alter table veiculo add foto varchar(500) null after cor;
  
  CREATE TABLE dispositivo(
 	id int PRIMARY KEY AUTO_INCREMENT,
@@ -55,8 +54,45 @@ alter table veiculo add foto varchar(500) null after cor;
     perigo_temp bool NOT NULL,
     perigo_oxi bool NOT NULL,
     ar_ligado bool NOT NULL,
+    id_esp int not null,
     veiculo_id int NOT NULL,
+    data_hora DATETIME NOT NULL 
+	DEFAULT CURRENT_TIMESTAMP 
+	ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (veiculo_id) REFERENCES veiculo(id_veiculo)
+);
+
+CREATE TABLE tecnico(
+					id int PRIMARY KEY AUTO_INCREMENT,
+                    nome varchar(30) NOT NULL,
+                    sobrenome varchar(70) NOT NULL,
+					email varchar(100) NOT NULL UNIQUE,
+                    senha varchar(60) NOT NULL);
+
+insert into tecnico (nome, sobrenome,email,senha) values ('Guilherme', 'Santana', 'admin@admin.com', 'admintecnico');
+
+INSERT INTO dispositivo (
+    vidro_aberto,
+    temperatura,
+    umidade,
+    presenca,
+    oxigenio,
+    perigo_temp,
+    perigo_oxi,
+    ar_ligado,
+    id_esp,
+    veiculo_id
+) VALUES (
+    0,     -- vidro_aberto
+    26,    -- temperatura em °C
+    55,    -- umidade %
+    0,     -- presenca detectada
+    3000,    -- oxigenio ppm
+    0,     -- perigo_temp
+    0,     -- perigo_oxi
+    0,     -- ar_ligado
+    12345, -- id_esp (identificação do ESP8266/ESP32)
+    5      -- veiculo_id = 5
 );
  
  insert into dispositivo (vidro_aberto,temperatura,umidade,presenca,oxigenio,perigo_temp,perigo_oxi,ar_ligado,veiculo_id)
@@ -67,5 +103,6 @@ alter table veiculo add foto varchar(500) null after cor;
 select * from usuario;
 select * from veiculo;
 select * from proprietario;
+select * from dispositivo;
 delete from usuario WHERE email = 'gigi10.valdez@gmail.com';
 drop table usuario;

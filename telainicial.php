@@ -252,7 +252,16 @@ include("verifyRegister.php");
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16"  class="icones4 rounded-circle me-2">
+                            <img src="<?php if ($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png') {
+                                            echo 'img/3364044.png';
+                                        } else {
+                                            echo $_SESSION['foto_perfil'];
+                                        } ?>"
+                                alt=""
+                                width="32" height="32"
+                                style="object-fit: cover; border-radius: 50%;"
+                                class="icones4 me-2">
+
                             <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
@@ -268,7 +277,11 @@ include("verifyRegister.php");
 
     </div>
 
-    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="<?php echo $_SESSION['foto_perfil'] ?>" style="border-radius: 50%;">
+    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x"
+        src="<?php echo $_SESSION['foto_perfil']; ?>"
+        width="120" height="120"
+        style="border-radius: 50%; object-fit: cover;">
+
     <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
     <a href="perfil.php" class="usuario2 position-absolute top-0 start-50 translate-middle-x">Editar Perfil</a>
     </div>
@@ -277,7 +290,7 @@ include("verifyRegister.php");
 
         <!-- Os dados para este campo virão do PHP -->
 
-        <div class="card mb-3 bg-secondary bg-gradient">
+        <div class="card mb-3 bg-gradient" style="border: none; background-color: transparent;">
             <!-- carrossel -->
             <div class="text-center">
 
@@ -293,7 +306,7 @@ include("verifyRegister.php");
                                 <button type="button"
                                     data-bs-target="#carouselExampleCaptions"
                                     data-bs-slide-to="<?php echo $index; ?>"
-                                    class="<?php echo $index === 0 ? 'active' : ''; ?>"
+                                    class="<?php echo $index === 0 ? 'active' : ''; ?> bg-secondary"
                                     aria-label="Slide <?php echo $index + 1; ?>">
                                 </button>
                             <?php endforeach; ?>
@@ -302,22 +315,23 @@ include("verifyRegister.php");
                         <!-- itens -->
                         <div class="carousel-inner">
                             <?php foreach ($veiculos as $index => $veiculo): ?>
-                                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>" >
 
                                     <!-- Link para status do veículo -->
                                     <a href="statusveiculos.php?id=<?= $veiculo['id_veiculo'] ?>">
                                         <img src="<?= htmlspecialchars($veiculo['foto']) ?>"
-                                            style="border-radius: 10px; width:270px; height:150px;"
-                                            class="d-block carromobile mx-auto m-4"
+                                            style="border-radius: 10px; width:340px; height:190px; border: 10px solid gray;object-fit: cover;"
+                                            class="d-block carromobile mx-auto m-3"
                                             alt="Carro">
                                     </a>
 
-                                    <div class="carousel-caption d-none d-md-block">
-                                        <h5 class="text-shadow fs-3 mt-5">
-                                            <?= htmlspecialchars($veiculo['marca']) . " " . htmlspecialchars($veiculo['modelo']); ?>
+                                    <div class="carousel-caption d-md-block">
+                                        <h5 class="text-shadow fs-3">
+                                            <?php echo htmlspecialchars($veiculo['marca']) . " " . htmlspecialchars($veiculo['modelo']); ?>
                                         </h5>
                                     </div>
                                 </div>
+
                             <?php endforeach; ?>
                         </div>
 

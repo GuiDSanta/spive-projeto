@@ -1,11 +1,60 @@
 <?php
-$erroMsg = "";
-// Inicia a sessão
 session_start();
-if(!empty($_SESSION["erro_login"])){
+$erroMsg = "";
+if (!empty($_SESSION["erro_login"])) {
     $erroMsg = $_SESSION["erro_login"];
 }
+
+// Verifica se o formulário foi enviado
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    require_once 'conexaodb.php'; // coloque sua conexão aqui!
+
+    $login = isset($_POST["email"]) ? trim($_POST["email"]) : '';
+    $senha = isset($_POST["password"]) ? trim($_POST["password"]) : '';
+
+    if ($login === '' || $senha === '') {
+        $_SESSION["erro_login"] = "Você deve digitar seu email e senha!";
+        header("Location: logintecnico.php");
+        exit;
+    }
+
+    // Agora buscamos todos os campos necessários
+    $stmt = $conn->prepare("SELECT id, nome, sobrenome, email, senha FROM tecnico WHERE email = ?");
+    $stmt->bind_param("s", $login);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows) {
+
+        $dados = $result->fetch_assoc();
+
+        // Verifica a senha
+        if ($senha == $dados["senha"]) {
+
+            $_SESSION["id_tecnico"] = $dados["id"];
+            $_SESSION["nome_tecnico"] = $dados["nome"];
+            $_SESSION["sobrenome_tecnico"] = $dados["sobrenome"];
+            $_SESSION["email_tecnico"] = $dados["email"];
+
+            $_SESSION["erro_login"] = "";
+
+            header("Location: areatecnico.php");
+            exit;
+        } else {
+            $_SESSION["erro_login"] = "Usuário ou senha inválida!";
+            header("Location: logintecnico.php");
+            exit;
+        }
+
+    } else {
+        $_SESSION["erro_login"] = "Usuário ou senha inválida!";
+        header("Location: logintecnico.php");
+        exit;
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -87,7 +136,6 @@ if(!empty($_SESSION["erro_login"])){
             color: #437ECA;
             text-decoration: none;
         }
-
     </style>
 </head>
 
@@ -102,8 +150,8 @@ if(!empty($_SESSION["erro_login"])){
         <div class="form pb-5">
             <br>
             <h5 class="text-danger"> <?php echo $erroMsg; ?></h5>
-            <h1 class="text-center mb-3 mt-5" style="font-family: madetommyM;">LOGIN</h1>
-            <form action="loginteste.php" class="text-center mb-5" method="post">
+            <h1 class="text-center mb-3 mt-5" style="font-family: madetommyM;">LOGIN DE SUPORTE</h1>
+            <form action="logintecnico.php" class="text-center mb-5" method="post">
                 <div class="mb-3">
                     <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelpId"
                         placeholder="Email" required />
@@ -114,24 +162,18 @@ if(!empty($_SESSION["erro_login"])){
                         required />
                 </div>
 
-                <button type="submit" class="btn btn-primary">
-                    Entrar
-                </button>
-                <br><br>
-                <a href="saibamais.php" class='text-secondary fs-6 mt-0 text-decoration-underline'>Saiba mais</a>
-
+                <div>
+                    <button type="submit" class="btn btn-primary">
+                        Entrar
+                    </button>
+                    <button type="button" class="btn text-light " onclick="window.location.href='index.php'">Voltar</button>
+                </div>
 
             </form>
-            <a href="esqueceuSenha.php" class="mt-3">Esqueci minha senha!</a>
-            
-            <p class="">Não possui uma conta? <a href="cadastro1.php">Clique aqui</a></p>
-            <a href="logintecnico.php" style="margin-top: -15px;" class="text-secondary">Login para técnicos</a>
-            
         </div>
     </main>
 
 </body>
 <script src="js/bootstrap.min.js"></script>
 
-</html> 
-
+</html>
