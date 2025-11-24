@@ -1,5 +1,28 @@
 <?php
 include("verifySession.php");
+include("conexaodb.php");
+
+$id_veiculo = $_GET['id'] ?? 0;
+
+// busca o dispositivo do veículo
+$sql = "SELECT * FROM dispositivo 
+        WHERE veiculo_id = ?
+        ORDER BY id DESC 
+        LIMIT 1";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_veiculo);
+$stmt->execute();
+$dispositivo = $stmt->get_result()->fetch_assoc();
+
+$sqlveu = "SELECT * FROM veiculo WHERE id_veiculo = ?";
+$stmtveu = $conn->prepare($sqlveu);
+$stmtveu->bind_param("i", $id_veiculo);
+$stmtveu->execute();
+$veiculo = $stmtveu->get_result()->fetch_assoc();
+
+
+$voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -174,10 +197,10 @@ include("verifySession.php");
 
         .sos {
             color: red;
-            
+
         }
 
-        .btn1{
+        .btn1 {
             height: 40px;
             width: 120px;
             background-color: #16427F;
@@ -188,15 +211,15 @@ include("verifySession.php");
             justify-content: center;
             align-items: center;
             border: solid 1px #000000ff;
-            
+
         }
 
-        .btn1:active{
+        .btn1:active {
             background-color: #061f42ff;
             transform: scale(1.1);
         }
 
-        .btn2{
+        .btn2 {
             height: 40px;
             width: 120px;
             background-color: #ff0000ff;
@@ -211,22 +234,41 @@ include("verifySession.php");
             border: solid 1px #000000ff;
         }
 
-        .btn2:active{
+        .btn2:active {
             background-color: #b30000ff;
             transform: scale(1.1);
         }
 
 
-        .linha{
+        .linha {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
         }
-
-    
-        
     </style>
 </head>
+<div class="modal fade" id="modalConfirmacao" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Ação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="modalTexto">
+                <!-- Texto carregado dinamicamente -->
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <a id="modalConfirmarBtn" href="#" class="btn btn-primary">Confirmar</a>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <body>
     <div class="LogoSpive">
@@ -291,8 +333,8 @@ include("verifySession.php");
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
-                            <strong><?php echo ($_SESSION['nome_usuario'])." ".($_SESSION['sobrenome_usuario']); ?></strong>
+                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
 
@@ -311,172 +353,131 @@ include("verifySession.php");
     </div>
     <main class="container">
 
-        <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
+        <img src="<?= $veiculo['foto'] ?>" class="d-block w-100 mt-3" style="border-radius:10px; border: 10px solid lightgray;" alt="...">
         <h4 class="mt-3">Ações Veículo</h4>
         <hr>
 
+        <!-- ========================== VIDROS ========================== -->
         <div class="linha">
-            <h5 class="mt-3">Abaixar vidros:</h5>
-            <button type="button" id="vidro" class="btn1" data-bs-toggle="modal" data-bs-target="#confirmarVidro">Abaixar</button>
+            <h5 class="mt-2">Abaixar vidros:</h5>
+
+            <?php if ($dispositivo['vidro_aberto'] == 1): ?>
+                <button class="btn1 bg-danger mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmacao"
+                    data-acao="fechar_vidro"
+                    data-texto="Deseja realmente levantar os vidros?">Levantar</button>
+
+            <?php else: ?>
+                <button class="btn1 bg-success mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmacao"
+                    data-acao="abrir_vidro"
+                    data-texto="Deseja realmente abaixar os vidros?">Abaixar</button>
+            <?php endif; ?>
         </div>
-            <p id="txt-info">Abaixar parcialmente os vidros do veículo.</p> 
-            <hr>
-        
-        <div class="linha">    
-            <h5 class="mt-3">Ar condicionado:</h5>
-            <button type="button" id="Ar-botao" class="btn1" data-bs-toggle="modal" data-bs-target="#ligarAr">Ligar</button>
-        </div>
-            <p>Gerenciar o ar condicionado do veículo.</p>    
-            <hr>
-        
-        <div class="linha">   
-            <div class="sos">
-            <h5 class="mt-3 SOS ">SOS :</h5>
-            </div> 
-            <button type="button" id="emergencia" class="btn2" data-bs-toggle="modal" data-bs-target="#ligar_emergencia">EMERGÊNCIA</button>
-        </div>
-            <p1 class="sos">Aciona a emergência.</p1>
-            <hr>
+
+        <p>Controle dos vidros do veículo.</p>
+        <hr>
+
+        <!-- ========================== AR CONDICIONADO ========================== -->
+        <div class="linha">
+            <h5 class="mt-2">Ar condicionado:</h5>
+
+            <?php if ($dispositivo['ar_ligado'] == 1): ?>
+                <button class="btn1 bg-danger mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmacao"
+                    data-acao="desligar_ar"
+                    data-texto="Deseja realmente desligar o ar condicionado?">Desligar</button>
+
+            <?php else: ?>
+                <button class="btn1 bg-success mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmacao"
+                    data-acao="ligar_ar"
+                    data-texto="Deseja realmente ligar o ar condicionado?">Ligar</button>
+            <?php endif; ?>
 
         </div>
+
+        <p>Gerenciar o ar condicionado do veículo.</p>
+        <hr>
+
+        <!-- ========================== SOS ========================== -->
+        <div class="linha">
+            <div class="sos">
+                <h5 class="mt-2 SOS">SOS :</h5>
+            </div>
+
+            <button class="btn2 bg-danger mt-3"
+                data-bs-toggle="modal"
+                data-bs-target="#modalConfirmacao"
+                data-acao="sos"
+                data-texto="⚠️ SOS é uma ação de emergência. Tem certeza que deseja continuar?">EMERGÊNCIA</button>
+        </div>
+
+        <p class="sos">Aciona a emergência.</p>
+        <hr>
 
         <div class="alinhar text-center mt-3">
-            <a button type="submit" class="btn btn-primary" href="statusveiculos.php">Voltar</a>
+            <a class="btn btn-primary" href="statusveiculos.php?id=<?= $id_veiculo ?>">Voltar</a>
         </div>
         <br>
-
 
     </main>
 
-        <!-- Modal de confirmação Vidro -->
-<div class="modal fade" id="confirmarVidro" tabindex="-1" aria-labelledby="confirmarVidroLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 10px;">
-      <div class="modal-body text-center">
-        <p id="texto_vidro" class="fs-5 mb-3">Tem certeza que deseja abaixar o vidro?</p>
-        <div class="d-flex justify-content-center gap-3">
-          <button type="button" class="btn bg-danger text-light px-4" id="confirmarSim">Sim</button>
-          <button type="button" class="btn btn-secondary px-4" id="cancelar" data-bs-dismiss="modal">Cancelar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    <!-- Fim do modal de confirmação Vidro -->
-
-    <!-- Modal de confirmação Ar condicionado -->
-<div class="modal fade" id="ligarAr" tabindex="-1" aria-labelledby="ligarArLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 10px;">
-      <div class="modal-body text-center">
-        <p id="texto_ar" class="fs-5 mb-3">Tem certeza que deseja ligar o Ar-condicionado</p>
-        <div class="d-flex justify-content-center gap-3">
-          <button type="button" class="btn bg-danger px-4 text-light" id="Sim">Sim</button>
-          <button type="button" class="btn btn-secondary px-4" id="cancelar" data-bs-dismiss="modal">Cancelar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    <!-- Fim do modal de confirmação Vidro -->
-
-    <!-- Modal de Emergência -->
-<div class="modal fade" id="ligar_emergencia" tabindex="-1" aria-labelledby="ligar_emergenciaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 10px;">
-      <div class="modal-body text-center">
-        <p id="texto_emergencia" class="text-danger fs-5 mb-3">ATENÇÃO!</p>
-        <img src="img\warning_300dp_EA3323_FILL0_wght400_GRAD0_opsz48.png" alt="Aviso" width="1" height="2">
-        <br>
-        <p id="texto_emergencia" class="text-danger fs-5 mb-3">Tem certeza que deseja ligar para a emergência?</p>
-        <div class="d-flex justify-content-center gap-3">
-          <button type="button" class="btn bg-danger text-light" id="confirmarSim3">Ligar</button>
-          <button type="button" class="btn btn-secondary px-4" id="cancelar" data-bs-dismiss="modal">Cancelar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    <!-- Fim do modal de Emergência -->
-
-
-  <script>
-
-  let vidro = document.getElementById("vidro");
-  let texto_vidro = document.getElementById("texto_vidro");
-  let confirma_sim = document.getElementById("confirmarSim");
-
-  let ar_condicionado = document.getElementById("Ar-botao");
-  let texto_ar = document.getElementById("texto_ar");
-  let confirmar_sim = document.getElementById("Sim");
-  
-
-  
-  let emergencia = document.getElementById("emergencia");
-  let texto_emergencia = document.getElementById("texto_emergencia");
-  let confirmar_sim3 = document.getElementById("confirmarSim3");
-
-
-    document.getElementById("confirmarSim").addEventListener("click", function() {
-    if (vidro.innerText === "Levantar") {
-        vidro.innerText = "Abaixar"; // Se o texto for "Levantar", muda para "Abaixar"
-        texto_vidro.innerText = "Tem certeza que deseja abaixar o vidro?";
-        confirma_sim.innerText = "Sim";
-        vidro.style.backgroundColor = "#16427F";
-        var modal = bootstrap.Modal.getInstance(document.getElementById('confirmarVidro'));
-        modal.hide(); // Muda a cor do botão para verde
-        return; // Sai da função para evitar mudar novamente
-        
-    } else if(vidro.innerText === "Abaixar") {
-        vidro.innerText = "Levantar"; // Se o texto for "Abaixar", muda para "Levantar"
-        vidro.style.backgroundColor = "#f5463aff";
-        texto_vidro.innerText = "Tem certeza que deseja levantar o vidro?";
-        var modal = bootstrap.Modal.getInstance(document.getElementById('confirmarVidro'));
-        modal.hide();
-        return; // Sai da função para evitar mudar novamente
-    } 
-    });
-
-    document.getElementById("Sim").addEventListener("click", function() {
-    if (ar_condicionado.innerText === "Desligar") {
-        ar_condicionado.innerText = "Ligar"; 
-        texto_ar.innerText = "Tem certeza que deseja Ligar o Ar-condicionado?";
-        confirmar_sim.innerText = "Sim";
-        ar_condicionado.style.backgroundColor = "#16427F";
-        var modal = bootstrap.Modal.getInstance(document.getElementById('ligarAr'));
-        modal.hide(); 
-        return; 
-        
-    } else if(ar_condicionado.innerText === "Ligar") {
-        ar_condicionado.innerText = "Desligar"; 
-        ar_condicionado.style.backgroundColor = "#f5463aff";
-        texto_ar.innerText = "Tem certeza que deseja desligar o Ar-condicionado?";
-        var modal = bootstrap.Modal.getInstance(document.getElementById('ligarAr'));
-        modal.hide();
-
-        return; 
-    } 
-    });
-
-    document.getElementById("confirmarSim3").addEventListener("click", function() {
-    if(vidro.innerText === "Ligar para emergência") {
- 
-        var modal = bootstrap.Modal.getInstance(document.getElementById('confirmarVidro'));
-        modal.hide();
-        return; // Sai da função para evitar mudar novamente
-    } 
-    });
-    
-
-
-    </script>
 
 
 </body>
 <script src="js/bootstrap.min.js"></script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('modalConfirmacao');
+    var texto = document.getElementById('modalTexto');
+    var confirmarBtn = document.getElementById('modalConfirmarBtn');
+
+    function isMobile() {
+        return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+    }
+
+    modal.addEventListener('show.bs.modal', function (event) {
+        var botao = event.relatedTarget;
+        var acao = botao.getAttribute('data-acao');
+        var mensagem = botao.getAttribute('data-texto');
+
+        texto.innerHTML = mensagem;
+
+        //  IMPORTANTE: limpa qualquer ação antiga no botão
+        confirmarBtn.onclick = null;
+
+        //  Se for SOS → verificar dispositivo
+        if (acao === "sos") {
+
+            if (isMobile()) {
+                // Celular → abrir o discador
+                confirmarBtn.href = "tel:193";
+            } else {
+                // Desktop → bloquear ligação e mostrar alerta
+                confirmarBtn.href = "#";
+                confirmarBtn.onclick = function(e) {
+                    e.preventDefault();
+                    alert("⚠ Não é possível realizar ligações pelo computador.");
+                }
+            }
+
+            return;
+        }
+
+        // Todas as outras ações → funcionamento normal
+        confirmarBtn.href = "acao_update.php?acao=" + acao + "&id=<?= $id_veiculo ?>";
+    });
+});
+</script>
+
+
+
 
 
 </html>
-
-

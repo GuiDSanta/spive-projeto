@@ -1,7 +1,48 @@
 <?php
 include("verifySession.php");
 include("verifyRegister.php");
+
 $voltar_para = 'meusveiculos.php';
+
+// Verifica se veio o ID na URL
+if (!isset($_GET['id'])) {
+    die("Veículo não informado.");
+}
+
+$id_veiculo = intval($_GET['id']);
+
+// Conexão com o banco
+include("conexaodb.php");
+
+// Busca o veículo selecionado
+$sql = "SELECT * FROM veiculo WHERE id_veiculo = ? AND condutor_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $id_veiculo, $_SESSION['id_usuario']);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Se não encontrar veículo = erro ou tentativa de acessar veículo de outro usuário
+if ($result->num_rows == 0) {
+    die("Veículo não encontrado ou você não tem permissão para acessá-lo.");
+}
+
+$veiculo = $result->fetch_assoc();
+
+// Aqui você pode buscar os dados do dispositivo. Exemplo:
+// $dispositivo = pegar dados do sensor...
+
+$sql_disp = "SELECT * FROM dispositivo WHERE veiculo_id = ? ORDER BY id DESC 
+        LIMIT 1";
+$stmt_disp = $conn->prepare($sql_disp);
+$stmt_disp->bind_param("i", $id_veiculo);
+$stmt_disp->execute();
+$result_disp = $stmt_disp->get_result();
+
+$dispositivoExiste = $result_disp->num_rows > 0;
+
+if ($dispositivoExiste) {
+    $dispositivo = $result_disp->fetch_assoc();
+}
 
 ?>
 <!DOCTYPE html>
@@ -234,7 +275,7 @@ $voltar_para = 'meusveiculos.php';
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
                             <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
@@ -254,51 +295,100 @@ $voltar_para = 'meusveiculos.php';
     </div>
     <main class="container">
 
-        <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="d-block w-100" alt="...">
+        <img src="<?php echo $veiculo['foto'] ?>" class="d-block w-100 mt-3" style="border-radius:10px; border: 10px solid lightgray;" alt="...">
+
         <h4 class="mt-3">Status Veículo</h4>
+
+        <?php if (!$dispositivoExiste): ?>
+            <div class="alert alert-warning mt-3">
+                Nenhum dispositivo está cadastrado para este veículo.<br>
+                Entre em contato com o suporte para ativação.
+            </div>
+        <?php endif; ?>
+
+
+
         <div style="height: 300px; overflow-y: scroll; padding: 15px; margin-bottom: 20px;">
-            <h5 class="mt-3">Temperatura Interna: <?php echo ($dispositivo[0]['temperatura']); ?> °C</h5>
-            <hr>
-            <h5 class="mt-3">Status Temperatura: <?php
-                                                    if ($dispositivo[0]['perigo_temp'] >= 38) {
-                                                        echo '<span class="text-danger">Alto Risco!</span>';
-                                                    } else {
-                                                        echo '<span class="text-success">Normal</span>';
-                                                    } ?>
+
+            <?php if ($dispositivoExiste): ?>
+                <h6 class="text-secondary" style="font-size: 14px; margin-top: 20px;"><?php echo "Ultima atualização: " . $dispositivo['data_hora']; ?></h6>
+            <?php endif; ?>
+            <!-- TEMPERATURA -->
+            <h5 class="mt-3">
+                Temperatura Interna:
+                <?= $dispositivoExiste ? $dispositivo['temperatura'] . " °C" : "—" ?>
             </h5>
             <hr>
-            <h5 class="mt-3">Nível de Oxigênio: <?php echo ($dispositivo[0]['oxigenio']); ?> p.p.m.</h5>
+
+            <h5 class="mt-3">Status Temperatura:
+                <?php if ($dispositivoExiste): ?>
+                    <?php if ($dispositivo['temperatura'] >= 38): ?>
+                        <span class="text-danger">Alto Risco!</span>
+                    <?php else: ?>
+                        <span class="text-success">Normal</span>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <span class="text-muted">—</span>
+                <?php endif; ?>
+            </h5>
             <hr>
-            <h5 class="mt-3">Status Oxigênio: <?php
-                                                if ($dispositivo[0]['perigo_oxi'] <= 195000) {
-                                                    echo '<span class="text-danger">Alto Risco!</span>';
-                                                } else {
-                                                    echo '<span class="text-success">Normal</span>';
-                                                } ?>
-                <hr>
-                <h5 class="mt-3">Nível de Umidade: <?php echo ($dispositivo[0]['umidade']); ?>%</h5>
-                <hr>
-                <h5 class="mt-3">Carro Vazio: <?php if ($dispositivo[0]['presenca'] == 0) {
-                                                    echo "Sim";
-                                                } else {
-                                                    echo "Não";
-                                                } ?>
-                </h5>
-                <hr>
-                <h5 class="mt-3">Localização:</h5>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d913.5565647822999!2d-46.46046999139668!3d-23.667865331599426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e3!4m0!4m5!1s0x94ce69686cf767e1%3A0x34478f518ddbe831!2sR.%20Faustino%20Pereira%20Rito%20-%20RP1%20(Regi%C3%B5es%20de%20Planejamento)%2C%20Mau%C3%A1%20-%20SP%2C%2009310-105!3m2!1d-23.667735699999998!2d-46.459874899999996!5e0!3m2!1spt-BR!2sbr!4v1760970326869!5m2!1spt-BR!2sbr" width="320" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+            <!-- OXIGÊNIO -->
+            <h5 class="mt-3">
+                Nível de Oxigênio:
+                <?= $dispositivoExiste ? $dispositivo['oxigenio'] . " p.p.m." : "—" ?>
+            </h5>
+            <hr>
+
+            <h5 class="mt-3">Status Oxigênio:
+                <?php if ($dispositivoExiste): ?>
+                    <?php if ($dispositivo['oxigenio'] < 2499): ?>
+                        <span class="text-danger">Alto Risco!</span>
+                    <?php else: ?>
+                        <span class="text-success">Normal</span>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <span class="text-muted">—</span>
+                <?php endif; ?>
+            </h5>
+            <hr>
+
+            <!-- UMIDADE -->
+            <h5 class="mt-3">
+                Nível de Umidade:
+                <?= $dispositivoExiste ? $dispositivo['umidade'] . "%" : "—" ?>
+            </h5>
+            <hr>
+
+            <!-- PRESENÇA -->
+            <h5 class="mt-3">Carro Vazio:
+                <?php
+                if (!$dispositivoExiste) {
+                    echo "—";
+                } else {
+                    echo ($dispositivo['presenca'] == 0 ? "Sim" : "Não");
+                }
+                ?>
+            </h5>
+            <hr>
 
         </div>
 
         <div class="alinhar text-center mt-3">
-            <a button type="submit" class="btn btn-primary" href="acoesVeiculos.php">Ações</a>
-            <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
+
+            <?php if (!$dispositivoExiste): ?>
+                <a class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">Ações</a>
+            <?php else: ?>
+                <a class="btn btn-primary" href="acoesVeiculos.php?id=<?= $id_veiculo ?>">Ações</a>
+            <?php endif; ?>
+
+            <button type="button" class="btn text-light" onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
         </div>
+
         <br>
 
-
-
     </main>
+
 </body>
 <script src="js/bootstrap.min.js"></script>
 

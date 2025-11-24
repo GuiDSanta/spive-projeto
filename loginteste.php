@@ -24,7 +24,7 @@ if (!$login || !$senha) {
 // Usando mysqli com prepared statements para evitar SQL injection
 // A verificação de erro de conexão foi movida para conexaodb.php para melhor separação de responsabilidades.
 
-$stmt = $conn->prepare("SELECT id, nome, sobrenome, email, senha, cpf FROM usuario WHERE email = ?");
+$stmt = $conn->prepare("SELECT id, nome, sobrenome, email, senha, cpf, foto_perfil FROM usuario WHERE email = ?");
 //$stmt = $conn->prepare("SELECT id, nome, email, senha FROM usuario WHERE email = ?");
 
 $stmt->bind_param("s", $login);
@@ -50,6 +50,8 @@ if ($total) {
         $_SESSION["email_usuario"] = stripslashes($dados["email"]);
 
         $_SESSION["cpf_usuario"] = stripslashes($dados["cpf"]);
+
+        $_SESSION['foto_perfil'] = (stripslashes($dados["foto_perfil"]) == null) ? 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png' : stripslashes($dados["foto_perfil"]);
         header("Location: telainicial.php");
         $_SESSION["erro_login"] = "";
         exit;

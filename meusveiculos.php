@@ -1,6 +1,16 @@
 <?php
 $voltar_para = 'telainicial.php';
 include("verifySession.php");
+include("conexaodb.php"); // se você já tem esse arquivo
+
+$id_usuario = $_SESSION['id_usuario'];
+
+// Busca todos os veículos desse usuário
+$sql = "SELECT * FROM veiculo WHERE condutor_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -115,6 +125,7 @@ include("verifySession.php");
             height: 140px;
             margin-top: 10px;
         }
+        
 
         .usuario {
             color: #e9e9e9ff;
@@ -168,9 +179,11 @@ include("verifySession.php");
         }
 
         .imagemcard{
-            max-height: 90px;
+            max-height: 98px;
             height: 100%;
         }
+
+
     </style>
 </head>
 
@@ -237,7 +250,7 @@ include("verifySession.php");
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
                             <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
@@ -256,44 +269,65 @@ include("verifySession.php");
     <br>
     <h3 class="text-center">Meus Veículos</h3>
 
-    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png">
+    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="<?php echo $_SESSION['foto_perfil'] ?>" style="border-radius: 50%;">
     <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
     <a href="perfil.php" class="usuario2 position-absolute top-0 start-50 translate-middle-x">Editar Perfil</a>
     </div>
     <br>
-    <a href="statusveiculos.php">
-    <div class="card mb-3 md-lg" style="max-width: 300px; border-radius: 10px;">
-        <div class="row g-0">
-            <div class="col-4">
-                <img src="img/comprar-1-0-mt-pacote-rgd_acd152e5f0.png" class="img-fluid rounded-start imagemcard" style="background-color: gray;" alt="...">
-            </div>
-            <div class="col-8">
-                <div class="card-body mt-2">
-                    <h5 class="card-title text-dark">Chevrolet Onix</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-    </a>
 
-    <a href="cadastrarnovoveiculo.php">
-    <div class="card mb-3 md-lg" style="max-width: 300px; border-radius: 10px; height: 68px;">
-        <div class="row g-0">
-            <div class="col-4">
-                <img src="img/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" class="img-fluid rounded-start imagemcard" style="background-color: gray; height: 65px;" alt="...">
-            </div>
-            <div class="col-8">
-                <div class="card-body mt-1">
-                    <h5 class="card-title text-dark">Adicionar Novo</h5>
+<?php if ($result->num_rows > 0): ?>
+    <?php while ($veiculo = $result->fetch_assoc()): ?>
+
+        <a href="statusveiculos.php?id=<?= $veiculo['id_veiculo'] ?>">
+        <div class="card mb-3 md-lg" style="max-width: 300px; border-radius: 10px;">
+            <div class="row g-0">
+                <div class="col-4">
+                    <img src="<?= $veiculo['foto'] ?? 'default.png' ?>" 
+                         class="img-fluid rounded-start imagemcard" 
+                         style="background-color: gray; width: 200px; height: 100px;" alt="">
+                </div>
+                <div class="col-8">
+                    <div class="card-body mt-2">
+                        <h5 class="card-title text-dark">
+                            <?= htmlspecialchars($veiculo['modelo']) ?>
+                        </h5>
+                        <p class="card-text">
+                            <?= htmlspecialchars($veiculo['placa']) ?>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
+        </a>
+
+    <?php endwhile; ?>
+<?php else: ?>
+    <p class="text-center text-muted">Nenhum veículo cadastrado.</p>
+<?php endif; ?>
+
+<!-- CARTÃO DE ADICIONAR -->
+<a href="cadastrarnovoveiculo.php">
+<div class="card mb-3 md-lg" style="border-radius: 10px; height: 100px; max-width: 300px;">
+    <div class="row g-0">
+        <div class="col-4">
+            <img src="img/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg" class="img-fluid rounded-start imagemcard" style="background-color: gray; height: 100px; width: 200px;" alt="...">
+        </div>
+        <div class="col-8">
+            <div class="card-body mt-1">
+                <h5 class="card-title text-dark">Adicionar Novo</h5>
+            </div>
+        </div>
     </div>
-    </a>
+</div>
+</a>
+
+
+
 
     <div class="text-center">
         <button type="button" class="btn text-light " onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
     </div>
+    <br>
 
 </body>
 <script src="js/bootstrap.min.js"></script>

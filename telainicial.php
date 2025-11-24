@@ -172,17 +172,17 @@ include("verifyRegister.php");
             text-align: center;
         }
 
-        .text-shadow{
+        .text-shadow {
             text-shadow: black 2px 2px 5px;
         }
 
-        .carromobile{
+        .carromobile {
             width: 300px;
             height: 200px;
         }
 
-        
-        .carrodesktop{
+
+        .carrodesktop {
             width: 800px;
             height: 800px;
         }
@@ -252,7 +252,7 @@ include("verifyRegister.php");
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="img/3364044.png" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16"  class="icones4 rounded-circle me-2">
                             <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
@@ -268,7 +268,7 @@ include("verifyRegister.php");
 
     </div>
 
-    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png">
+    <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x" src="<?php echo $_SESSION['foto_perfil'] ?>" style="border-radius: 50%;">
     <h6 class="usuario position-absolute top-0 start-50 translate-middle-x"><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></h6> <!--Os dados para este campo virão do PHP-->
     <a href="perfil.php" class="usuario2 position-absolute top-0 start-50 translate-middle-x">Editar Perfil</a>
     </div>
@@ -280,62 +280,70 @@ include("verifyRegister.php");
         <div class="card mb-3 bg-secondary bg-gradient">
             <!-- carrossel -->
             <div class="text-center">
-                
-            
-            <?php if (empty($veiculos)): ?>
-    <p class="text-white mt-3">Não há veículo registrados.</p>
-<?php else: ?>
-    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
-        
-        <!-- indicadores -->
-        <div class="carousel-indicators">
-            <?php foreach ($veiculos as $index => $veiculo): ?>
-                <button type="button"
-                        data-bs-target="#carouselExampleCaptions"
-                        data-bs-slide-to="<?php echo $index; ?>"
-                        class="<?php echo $index === 0 ? 'active' : ''; ?>"
-                        aria-label="Slide <?php echo $index + 1; ?>">
-                </button>
-            <?php endforeach; ?>
-        </div>
 
-        <!-- itens -->
-        <div class="carousel-inner">
-            <?php foreach ($veiculos as $index => $veiculo): ?>
-                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                    <img src="<?php echo htmlspecialchars($veiculo['foto']); ?>" class="d-block carromobile mx-auto m-4" alt="Carro">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5 class="text-shadow fs-3 mt-5">
-                            <?php echo htmlspecialchars($veiculo['marca']) . " " . htmlspecialchars($veiculo['modelo']); ?>
-                        </h5>
+
+                <?php if (empty($veiculos)): ?>
+                    <p class="text-white mt-3">Não há veículo registrados.</p>
+                <?php else: ?>
+                    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+
+                        <!-- indicadores -->
+                        <div class="carousel-indicators">
+                            <?php foreach ($veiculos as $index => $veiculo): ?>
+                                <button type="button"
+                                    data-bs-target="#carouselExampleCaptions"
+                                    data-bs-slide-to="<?php echo $index; ?>"
+                                    class="<?php echo $index === 0 ? 'active' : ''; ?>"
+                                    aria-label="Slide <?php echo $index + 1; ?>">
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- itens -->
+                        <div class="carousel-inner">
+                            <?php foreach ($veiculos as $index => $veiculo): ?>
+                                <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+
+                                    <!-- Link para status do veículo -->
+                                    <a href="statusveiculos.php?id=<?= $veiculo['id_veiculo'] ?>">
+                                        <img src="<?= htmlspecialchars($veiculo['foto']) ?>"
+                                            style="border-radius: 10px; width:270px; height:150px;"
+                                            class="d-block carromobile mx-auto m-4"
+                                            alt="Carro">
+                                    </a>
+
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5 class="text-shadow fs-3 mt-5">
+                                            <?= htmlspecialchars($veiculo['marca']) . " " . htmlspecialchars($veiculo['modelo']); ?>
+                                        </h5>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+
+                        <!-- controles -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Anterior</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Próximo</span>
+                        </button>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- controles -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Próximo</span>
-        </button>
-    </div>
-<?php endif; ?>
-        </div>
+                <?php endif; ?>
+            </div>
 
     </main>
-    
-        <div class="alinhar text-center mt-3" style="font-family: madetommy, sans-serif;">
-            <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
-            <a button type="submit" class="btn btn-primary" href="cadastrarnovoveiculo.php">Cadastrar Novo</a>
-        </div>
+
+    <div class="alinhar text-center mt-3" style="font-family: madetommy, sans-serif;">
+        <a button type="submit" class="btn btn-primary" href="meusveiculos.php">Meus Veículos</a>
+        <a button type="submit" class="btn btn-primary" href="cadastrarnovoveiculo.php">Cadastrar Novo</a>
+    </div>
 </body>
 <script src="js/bootstrap.min.js"></script>
 
 
 
 </html>
-
