@@ -19,7 +19,7 @@ if ($data === null) {
 }
 
 // Verifica campos necessários
-$required = ['vidro_aberto','temperatura','umidade','presenca','oxigenio','perigo_temp','perigo_oxi','ar_ligado','id_esp','veiculo_id'];
+$required = ['vidro_aberto','temperatura','umidade','presenca','oxigenio','perigo_temp','perigo_oxi','ar_ligado','veiculo_id'];
 foreach ($required as $f) {
     if (!isset($data[$f])) {
         echo json_encode(['status'=>'erro','mensagem'=>"Campo faltando: $f"]);
@@ -29,8 +29,8 @@ foreach ($required as $f) {
 
 // Prepara insert
 $sql = "INSERT INTO dispositivo
-    (vidro_aberto, temperatura, umidade, presenca, oxigenio, perigo_temp, perigo_oxi, ar_ligado, id_esp, veiculo_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    (vidro_aberto, temperatura, umidade, presenca, oxigenio, perigo_temp, perigo_oxi, ar_ligado, veiculo_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
@@ -39,7 +39,7 @@ if (!$stmt) {
 }
 
 $stmt->bind_param(
-    "iiiiiiiiii",
+    "iiiiiiiii",
     $data['vidro_aberto'],
     $data['temperatura'],
     $data['umidade'],
@@ -48,7 +48,6 @@ $stmt->bind_param(
     $data['perigo_temp'],
     $data['perigo_oxi'],
     $data['ar_ligado'],
-    $data['id_esp'],
     $data['veiculo_id']
 );
 

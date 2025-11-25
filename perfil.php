@@ -19,54 +19,76 @@ if ($result && !empty($result['foto_perfil'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $novoEmail = $_POST['email'];
+    $novoNome = $_POST['nome'];
+    $novoSobrenome = $_POST['sobrenome'];
     $usuarioId = $_SESSION['id_usuario'];
 
-    if (empty($novoEmail)) {
-        echo "<script>
-            alert('Por favor, insira um email válido.');
-        </script>";
-    } else {
+    if (!empty($novoEmail)) {
         $login = $novoEmail;
+    } 
+    if (!empty($novoNome)) {
+        $nome = $novoNome;
+    } 
+    if (!empty($novoSobrenome)) {
+        $sobrenome = $novoSobrenome;
     }
 
-    $login = $novoEmail;
-    // Verifica se o email já está cadastrado
-    $stmt = $conn->prepare("SELECT id, nome, email, senha FROM usuario WHERE email = ?");
-
-    $stmt->bind_param("s", $login);
-    $stmt->execute();
-    $result_id = $stmt->get_result();
-    $total = $result_id->num_rows;
-    if ($total > 0) {
-        // Email já cadastrado
-        echo "<script> alert('Email já cadastrado');</script>";
-
+    if ($novoEmail == null || $novoNome == null || $novoSobrenome == null) {
         echo "<script>
+        window.onload = function() {
+            alert('Nenhuma alteração foi realizada, email, nome ou sobrenome nulo!')};
+    </script>";
+    } else if ($login == $_SESSION['email_usuario'] && $nome == $_SESSION['nome_usuario'] && $sobrenome == $_SESSION['sobrenome_usuario']){
+        
+    echo "<script>
+        window.onload = function() {
+            alert('Nenhuma alteração foi realizada')};
+    </script>";
+    }else {
+
+        $login = $novoEmail;
+        $nome = $novoNome;
+        $sobrenome = $novoSobrenome;
+
+        // Verifica se o email já está cadastrado
+        // Verifica se já existe usuário com mesmo email
+        $stmt = $conn->prepare("SELECT id FROM usuario WHERE email = ? AND id != ?");
+        $stmt->bind_param("si", $novoEmail, $usuarioId);
+        $stmt->execute();
+        $result_id = $stmt->get_result();
+        $total = $result_id->num_rows;
+
+        if ($total > 0) {
+            echo "<script>
         window.onload = function() {
             document.getElementById('alertaerro').style.visibility = 'visible';
             setTimeout(function() {
                 document.getElementById('alertaerro').style.visibility = 'hidden';
             }, 3000);
         };
-        </script>";
-    } else {
-        // Atualiza o email no banco de dados
-        $sql = "UPDATE usuario SET email = ? WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("si", $novoEmail, $usuarioId);
+    </script>";
+        } else {
 
-        if ($stmt->execute() && $total == 0) {
+            $sql = "UPDATE usuario SET email = ?, nome = ?, sobrenome = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sssi", $novoEmail, $novoNome, $novoSobrenome, $usuarioId);
 
-            // Atualiza o email na sessão
-            $_SESSION['email_usuario'] = $novoEmail;
-            echo "<script>
-        window.onload = function() {
-            document.getElementById('alertabom').style.visibility = 'visible';
-            setTimeout(function() {
-                document.getElementById('alertabom').style.visibility = 'hidden';
-            }, 3000);
-        };
+            if ($stmt->execute()) {
+
+                // ATUALIZA A SESSÃO (ESSENCIAL!)
+                $_SESSION['email_usuario'] = $novoEmail;
+                $_SESSION['nome_usuario'] = $novoNome;
+                $_SESSION['sobrenome_usuario'] = $novoSobrenome;
+
+                echo "<script>
+            window.onload = function() {
+                document.getElementById('alertabom').style.visibility = 'visible';
+                setTimeout(function() {
+                    document.getElementById('alertabom').style.visibility = 'hidden';
+                }, 2000);
+            };
         </script>";
+            }
         }
     }
     $stmt->close();
@@ -96,6 +118,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             /* ou italic */
         }
 
+        .fundopreto {
+            color: black;
+        }
+
+        .fundocinza {
+            color: gray;
+        }
 
         .container {
             font-family: madetommy, sans-serif;
@@ -306,7 +335,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div>
                         <a class="d-flex align-items-center link-dark" id="dropdownUser21" data-bs-toggle="dropdown" aria-expanded="false" type="button" href="#">
-                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <img src="<?php if ($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png') {
+                                            echo 'img/3364044.png';
+                                        } else {
+                                            echo $_SESSION['foto_perfil'];
+                                        } ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
                             <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
@@ -322,11 +355,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div>
             <a class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <img class="fotoperfil position-absolute top-0 start-50 translate-middle-x"
-     src="<?php echo $_SESSION['foto_perfil']; ?>"
-     width="120" height="120"
-     style="border-radius: 50%; object-fit: cover;"
-     data-bs-toggle="modal"
-                    data-bs-target="#modalFotoPerfil"   
+                    src="<?php echo $_SESSION['foto_perfil']; ?>"
+                    width="120" height="120"
+                    style="border-radius: 50%; object-fit: cover;"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalFotoPerfil"
                     id="fotoperfil">
 
 
@@ -342,16 +375,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form class="m-3 d-flex flex-column" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                 <label for="nome">Nome:</label>
-                <input type="text" name="nome" id="nome" disabled placeholder="<?php echo ($_SESSION['nome_usuario']); ?>">
+                <input type="text" name="nome" id="nome" value="<?php echo ($_SESSION['nome_usuario']); ?>" class="fundocinza" oninput="mudarcor(this)">
+                <script>
+                    function mudarcor(campo) {
+                        campo.style.color = "black"; // muda o texto
+                        campo.classList.remove("fundocinza");
+                        campo.classList.add("fundopreto");
+                    }
+                </script>
                 <br>
                 <label for="nome">Sobrenome:</label>
-                <input type="text" name="sobrenome" id="sobrenome" disabled placeholder="<?php echo ($_SESSION['sobrenome_usuario']); ?>">
+                <input type="text" name="sobrenome" id="sobrenome" value="<?php echo ($_SESSION['sobrenome_usuario']); ?>" style="color: gray;" oninput="mudarcor(this)">
                 <br>
                 <label for="nome">Email:</label>
-                <input type="email" name="email" id="email" placeholder="<?php echo ($_SESSION['email_usuario']); ?>" required>
+                <input type="email" name="email" id="email" value="<?php echo ($_SESSION['email_usuario']); ?>" style="color: gray;" oninput="mudarcor(this)">
                 <br>
                 <div class=text-center>
-                    <button class="btn btn-primary" type="submit" style="background-color: #16427F;">Salvar</button>
+                    <button class="btn btn-primary" type="submit" style="background-color: #16427F;" onsubmit="salvar(event)">Salvar</button>
                 </div>
             </form>
         </div>
@@ -443,8 +483,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
 <script src="js/bootstrap.min.js"></script>
 <script>
-    function salvar() {
+    function salvar(event) {
         document.getElementById("alerta").style.visibility = "visible";
+        let nome = document.getElementById("nome").value;
+        let sobrenome = document.getElementById("sobrenome").value;
+        let email = document.getElementById("email").value;
+        if (nome == null && sobrenome == null && email == null) {
+            event.preventDefault();
+            document.getElementById("alertaerro").style.visibility = "visible";
+        }
     }
 
     function retirar() {

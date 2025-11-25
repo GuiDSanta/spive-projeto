@@ -23,6 +23,27 @@ $veiculo = $stmtveu->get_result()->fetch_assoc();
 
 
 $voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php';
+
+$sqlpro = "SELECT * FROM proprietario WHERE id = ?";
+$stmtpro = $conn->prepare($sqlpro);
+$stmtpro->bind_param("i", $_SESSION['id_usuario']);
+$stmtpro->execute();
+$resultpro = $stmtpro->get_result();
+
+// Se não encontrar veículo = erro ou tentativa de acessar veículo de outro usuário
+if ($resultpro->num_rows == 0) {
+    die("Veículo não encontrado ou você não tem permissão para acessá-lo.");
+}
+
+$proprietario = $resultpro->fetch_assoc();
+$cnh = $proprietario['cnh']; // Ex: 123456789
+
+// Pega o primeiro e o último dígito
+$primeiro = substr($cnh, 0, 1);
+$ultimo = substr($cnh, -1);
+
+// Gera asteriscos para o meio (tamanho total - 2)
+$cnh = $primeiro . str_repeat('*', strlen($cnh) - 2) . $ultimo;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -333,7 +354,11 @@ $voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php';
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <img src="<?php if ($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png') {
+                                            echo 'img/3364044.png';
+                                        } else {
+                                            echo $_SESSION['foto_perfil'];
+                                        } ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
                             <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
@@ -353,73 +378,76 @@ $voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php';
     </div>
     <main class="container">
 
-        <img src="<?= $veiculo['foto'] ?>" class="d-block w-100 mt-3" style="border-radius:10px; border: 10px solid lightgray;" alt="...">
-        <h4 class="mt-3">Ações Veículo</h4>
-        <hr>
+        <img src="<?= $veiculo['foto'] ?>" class="d-block w-100 mt-3" style="border-radius:10px; border: 10px solid lightgray; object-fit: cover;" alt="...">
+        <h4 class="mt-3">Ações Veículo - <?php echo $veiculo['marca'] . " " . $veiculo['modelo'] ?></h4>
+        <h3 class="text-secondary ms-3 mt-3" style="font-size: 15px; text-align: left;"> <?php echo "Condutor Responsável: " . $proprietario['nome'] . "<br> Número CNH " . $cnh . "<br> Categoria: " . $proprietario['categoria'] ?></h3>
+        
+        <div id="acoesveiculo" class="justify-content-evenly flex-column ms-3" style="width: 90%;">
+            <!-- ========================== VIDROS ========================== -->
+             <h6 class="text-secondary" style="font-size: 14px; margin-top: 20px;"><?php echo "Ultima atualização: " . $dispositivo['data_hora']; ?></h6>
+             <hr>
+            <div class="linha">
+                <h5 class="mt-2">Abaixar vidros:</h5>
 
-        <!-- ========================== VIDROS ========================== -->
-        <div class="linha">
-            <h5 class="mt-2">Abaixar vidros:</h5>
+                <?php if ($dispositivo['vidro_aberto'] == 1): ?>
+                    <button class="btn1 bg-danger mt-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalConfirmacao"
+                        data-acao="fechar_vidro"
+                        data-texto="Deseja realmente levantar os vidros?">Levantar</button>
 
-            <?php if ($dispositivo['vidro_aberto'] == 1): ?>
-                <button class="btn1 bg-danger mt-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalConfirmacao"
-                    data-acao="fechar_vidro"
-                    data-texto="Deseja realmente levantar os vidros?">Levantar</button>
-
-            <?php else: ?>
-                <button class="btn1 bg-success mt-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalConfirmacao"
-                    data-acao="abrir_vidro"
-                    data-texto="Deseja realmente abaixar os vidros?">Abaixar</button>
-            <?php endif; ?>
-        </div>
-
-        <p>Controle dos vidros do veículo.</p>
-        <hr>
-
-        <!-- ========================== AR CONDICIONADO ========================== -->
-        <div class="linha">
-            <h5 class="mt-2">Ar condicionado:</h5>
-
-            <?php if ($dispositivo['ar_ligado'] == 1): ?>
-                <button class="btn1 bg-danger mt-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalConfirmacao"
-                    data-acao="desligar_ar"
-                    data-texto="Deseja realmente desligar o ar condicionado?">Desligar</button>
-
-            <?php else: ?>
-                <button class="btn1 bg-success mt-3"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalConfirmacao"
-                    data-acao="ligar_ar"
-                    data-texto="Deseja realmente ligar o ar condicionado?">Ligar</button>
-            <?php endif; ?>
-
-        </div>
-
-        <p>Gerenciar o ar condicionado do veículo.</p>
-        <hr>
-
-        <!-- ========================== SOS ========================== -->
-        <div class="linha">
-            <div class="sos">
-                <h5 class="mt-2 SOS">SOS :</h5>
+                <?php else: ?>
+                    <button class="btn1 bg-success mt-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalConfirmacao"
+                        data-acao="abrir_vidro"
+                        data-texto="Deseja realmente abaixar os vidros?">Abaixar</button>
+                <?php endif; ?>
             </div>
 
-            <button class="btn2 bg-danger mt-3"
-                data-bs-toggle="modal"
-                data-bs-target="#modalConfirmacao"
-                data-acao="sos"
-                data-texto="⚠️ SOS é uma ação de emergência. Tem certeza que deseja continuar?">EMERGÊNCIA</button>
+            <p>Controle dos vidros do veículo.</p>
+            <hr>
+
+            <!-- ========================== AR CONDICIONADO ========================== -->
+            <div class="linha">
+                <h5 class="mt-2">Ar condicionado:</h5>
+
+                <?php if ($dispositivo['ar_ligado'] == 1): ?>
+                    <button class="btn1 bg-danger mt-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalConfirmacao"
+                        data-acao="desligar_ar"
+                        data-texto="Deseja realmente desligar o ar condicionado?">Desligar</button>
+
+                <?php else: ?>
+                    <button class="btn1 bg-success mt-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalConfirmacao"
+                        data-acao="ligar_ar"
+                        data-texto="Deseja realmente ligar o ar condicionado?">Ligar</button>
+                <?php endif; ?>
+
+            </div>
+
+            <p>Controle do Ar condicionado.</p>
+            <hr>
+
+            <!-- ========================== SOS ========================== -->
+            <div class="linha">
+                <div class="sos">
+                    <h5 class="mt-2 SOS">SOS :</h5>
+                </div>
+
+                <button class="btn2 bg-danger mt-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalConfirmacao"
+                    data-acao="sos"
+                    data-texto="⚠️ SOS é uma ação de emergência. Tem certeza que deseja continuar?">EMERGÊNCIA</button>
+            </div>
+
+            <p class="sos">Aciona a emergência.</p>
+            <hr>
         </div>
-
-        <p class="sos">Aciona a emergência.</p>
-        <hr>
-
         <div class="alinhar text-center mt-3">
             <a class="btn btn-primary" href="statusveiculos.php?id=<?= $id_veiculo ?>">Voltar</a>
         </div>
@@ -427,53 +455,65 @@ $voltar_para = $_SERVER['HTTP_REFERER'] ?? 'index.php';
 
     </main>
 
+<script>
+        function atualizarStatus() {
+            fetch('acoesVeiculosajax.php?id=<?= $id_veiculo ?>')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('acoesveiculo').innerHTML = data;
+                })
+                .catch(error => console.log('Erro ao atualizar:', error));
+        }
 
+        // Atualiza a cada 3 segundos (3000 ms)
+        setInterval(atualizarStatus, 5000);
+    </script>
 
 </body>
 <script src="js/bootstrap.min.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var modal = document.getElementById('modalConfirmacao');
-    var texto = document.getElementById('modalTexto');
-    var confirmarBtn = document.getElementById('modalConfirmarBtn');
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = document.getElementById('modalConfirmacao');
+        var texto = document.getElementById('modalTexto');
+        var confirmarBtn = document.getElementById('modalConfirmarBtn');
 
-    function isMobile() {
-        return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
-    }
-
-    modal.addEventListener('show.bs.modal', function (event) {
-        var botao = event.relatedTarget;
-        var acao = botao.getAttribute('data-acao');
-        var mensagem = botao.getAttribute('data-texto');
-
-        texto.innerHTML = mensagem;
-
-        //  IMPORTANTE: limpa qualquer ação antiga no botão
-        confirmarBtn.onclick = null;
-
-        //  Se for SOS → verificar dispositivo
-        if (acao === "sos") {
-
-            if (isMobile()) {
-                // Celular → abrir o discador
-                confirmarBtn.href = "tel:193";
-            } else {
-                // Desktop → bloquear ligação e mostrar alerta
-                confirmarBtn.href = "#";
-                confirmarBtn.onclick = function(e) {
-                    e.preventDefault();
-                    alert("⚠ Não é possível realizar ligações pelo computador.");
-                }
-            }
-
-            return;
+        function isMobile() {
+            return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
         }
 
-        // Todas as outras ações → funcionamento normal
-        confirmarBtn.href = "acao_update.php?acao=" + acao + "&id=<?= $id_veiculo ?>";
+        modal.addEventListener('show.bs.modal', function(event) {
+            var botao = event.relatedTarget;
+            var acao = botao.getAttribute('data-acao');
+            var mensagem = botao.getAttribute('data-texto');
+
+            texto.innerHTML = mensagem;
+
+            //  IMPORTANTE: limpa qualquer ação antiga no botão
+            confirmarBtn.onclick = null;
+
+            //  Se for SOS → verificar dispositivo
+            if (acao === "sos") {
+
+                if (isMobile()) {
+                    // Celular → abrir o discador
+                    confirmarBtn.href = "tel:193";
+                } else {
+                    // Desktop → bloquear ligação e mostrar alerta
+                    confirmarBtn.href = "#";
+                    confirmarBtn.onclick = function(e) {
+                        e.preventDefault();
+                        alert("⚠ Não é possível realizar ligações pelo computador.");
+                    }
+                }
+
+                return;
+            }
+
+            // Todas as outras ações → funcionamento normal
+            confirmarBtn.href = "acao_update.php?acao=" + acao + "&id=<?= $id_veiculo ?>";
+        });
     });
-});
 </script>
 
 

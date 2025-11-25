@@ -44,6 +44,28 @@ if ($dispositivoExiste) {
     $dispositivo = $result_disp->fetch_assoc();
 }
 
+
+$sqlpro = "SELECT * FROM proprietario WHERE id = ?";
+$stmtpro = $conn->prepare($sqlpro);
+$stmtpro->bind_param("i", $_SESSION['id_usuario']);
+$stmtpro->execute();
+$resultpro = $stmtpro->get_result();
+
+// Se não encontrar veículo = erro ou tentativa de acessar veículo de outro usuário
+if ($result->num_rows == 0) {
+    die("Veículo não encontrado ou você não tem permissão para acessá-lo.");
+}
+
+$proprietario = $resultpro->fetch_assoc();
+$cnh = $proprietario['cnh']; // Ex: 123456789
+
+// Pega o primeiro e o último dígito
+$primeiro = substr($cnh, 0, 1);
+$ultimo = substr($cnh, -1);
+
+// Gera asteriscos para o meio (tamanho total - 2)
+$cnh = $primeiro . str_repeat('*', strlen($cnh) - 2) . $ultimo;
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -275,7 +297,11 @@ if ($dispositivoExiste) {
 
                     <div>
                         <a class="d-flex align-items-center link-dark" type="button" href="perfil.php">
-                            <img src="<?php if($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'){echo 'img/3364044.png';} else {echo $_SESSION['foto_perfil'];} ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
+                            <img src="<?php if ($_SESSION['foto_perfil'] == 'img/account_circle_140dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png') {
+                                            echo 'img/3364044.png';
+                                        } else {
+                                            echo $_SESSION['foto_perfil'];
+                                        } ?>" alt="" width="16" height="16" class="icones4 rounded-circle me-2">
                             <strong><?php echo ($_SESSION['nome_usuario']) . " " . ($_SESSION['sobrenome_usuario']); ?></strong>
                         </a>
                     </div>
@@ -295,100 +321,114 @@ if ($dispositivoExiste) {
     </div>
     <main class="container">
 
-        <img src="<?php echo $veiculo['foto'] ?>" class="d-block w-100 mt-3" style="border-radius:10px; border: 10px solid lightgray;" alt="...">
+        <img src="<?php echo $veiculo['foto'] ?>" class="d-block w-100 mt-3" style="border-radius:10px; border: 10px solid lightgray; object-fit: cover;" alt="...">
 
-        <h4 class="mt-3">Status Veículo</h4>
+        <h4 class="mt-3">Status Veículo - <?php echo $veiculo['marca'] . " " . $veiculo['modelo'] ?></h4>
+        <h3 class="text-secondary ms-3 mt-3" style="font-size: 15px; text-align: left;"> <?php echo "Condutor Responsável: " . $proprietario['nome'] . "<br> Número CNH " . $cnh . "<br> Categoria: " . $proprietario['categoria'] ?></h3>
 
-        <?php if (!$dispositivoExiste): ?>
-            <div class="alert alert-warning mt-3">
-                Nenhum dispositivo está cadastrado para este veículo.<br>
-                Entre em contato com o suporte para ativação.
-            </div>
-        <?php endif; ?>
-
-
-
-        <div style="height: 300px; overflow-y: scroll; padding: 15px; margin-bottom: 20px;">
-
-            <?php if ($dispositivoExiste): ?>
-                <h6 class="text-secondary" style="font-size: 14px; margin-top: 20px;"><?php echo "Ultima atualização: " . $dispositivo['data_hora']; ?></h6>
-            <?php endif; ?>
-            <!-- TEMPERATURA -->
-            <h5 class="mt-3">
-                Temperatura Interna:
-                <?= $dispositivoExiste ? $dispositivo['temperatura'] . " °C" : "—" ?>
-            </h5>
-            <hr>
-
-            <h5 class="mt-3">Status Temperatura:
-                <?php if ($dispositivoExiste): ?>
-                    <?php if ($dispositivo['temperatura'] >= 38): ?>
-                        <span class="text-danger">Alto Risco!</span>
-                    <?php else: ?>
-                        <span class="text-success">Normal</span>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <span class="text-muted">—</span>
-                <?php endif; ?>
-            </h5>
-            <hr>
-
-            <!-- OXIGÊNIO -->
-            <h5 class="mt-3">
-                Nível de Oxigênio:
-                <?= $dispositivoExiste ? $dispositivo['oxigenio'] . " p.p.m." : "—" ?>
-            </h5>
-            <hr>
-
-            <h5 class="mt-3">Status Oxigênio:
-                <?php if ($dispositivoExiste): ?>
-                    <?php if ($dispositivo['oxigenio'] < 2499): ?>
-                        <span class="text-danger">Alto Risco!</span>
-                    <?php else: ?>
-                        <span class="text-success">Normal</span>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <span class="text-muted">—</span>
-                <?php endif; ?>
-            </h5>
-            <hr>
-
-            <!-- UMIDADE -->
-            <h5 class="mt-3">
-                Nível de Umidade:
-                <?= $dispositivoExiste ? $dispositivo['umidade'] . "%" : "—" ?>
-            </h5>
-            <hr>
-
-            <!-- PRESENÇA -->
-            <h5 class="mt-3">Carro Vazio:
-                <?php
-                if (!$dispositivoExiste) {
-                    echo "—";
-                } else {
-                    echo ($dispositivo['presenca'] == 0 ? "Sim" : "Não");
-                }
-                ?>
-            </h5>
-            <hr>
-
-        </div>
-
-        <div class="alinhar text-center mt-3">
-
+        <div id="statusveiculo">
             <?php if (!$dispositivoExiste): ?>
-                <a class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">Ações</a>
-            <?php else: ?>
-                <a class="btn btn-primary" href="acoesVeiculos.php?id=<?= $id_veiculo ?>">Ações</a>
+                <div class="alert alert-warning mt-3">
+                    Nenhum dispositivo está cadastrado para este veículo.<br>
+                    Entre em contato com o suporte para ativação.
+                </div>
             <?php endif; ?>
 
-            <button type="button" class="btn text-light" onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
-        </div>
 
+
+            <div style="height: 420px; padding: 15px; margin-bottom: 20px;">
+
+                <?php if ($dispositivoExiste): ?>
+                    <h6 class="text-secondary" style="font-size: 14px; margin-top: 20px;"><?php echo "Ultima atualização: " . $dispositivo['data_hora']; ?></h6>
+                <?php endif; ?>
+                <!-- TEMPERATURA -->
+                <h5 class="mt-3">
+                    Temperatura Interna:
+                    <?= $dispositivoExiste ? $dispositivo['temperatura'] . " °C" : "—" ?>
+                </h5>
+                <hr>
+
+                <h5 class="mt-3">Status Temperatura:
+                    <?php if ($dispositivoExiste): ?>
+                        <?php if ($dispositivo['temperatura'] >= 38): ?>
+                            <span class="text-danger">Alto Risco!</span>
+                        <?php else: ?>
+                            <span class="text-success">Normal</span>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <span class="text-muted">—</span>
+                    <?php endif; ?>
+                </h5>
+                <hr>
+
+                <!-- OXIGÊNIO -->
+                <h5 class="mt-3">
+                    Nível de Oxigênio:
+                    <?= $dispositivoExiste ? $dispositivo['oxigenio'] . " p.p.m." : "—" ?>
+                </h5>
+                <hr>
+
+                <h5 class="mt-3">Status Oxigênio:
+                    <?php if ($dispositivoExiste): ?>
+                        <?php if ($dispositivo['oxigenio'] < 2499): ?>
+                            <span class="text-danger">Alto Risco!</span>
+                        <?php else: ?>
+                            <span class="text-success">Normal</span>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <span class="text-muted">—</span>
+                    <?php endif; ?>
+                </h5>
+                <hr>
+
+                <!-- UMIDADE -->
+                <h5 class="mt-3">
+                    Nível de Umidade:
+                    <?= $dispositivoExiste ? $dispositivo['umidade'] . "%" : "—" ?>
+                </h5>
+                <hr>
+
+                <!-- PRESENÇA -->
+                <h5 class="mt-3">Carro Vazio:
+                    <?php
+                    if (!$dispositivoExiste) {
+                        echo "—";
+                    } else {
+                        echo ($dispositivo['presenca'] == 0 ? "Sim" : "Não");
+                    }
+                    ?>
+                </h5>
+                <hr>
+
+            </div>
+
+            <div class="alinhar text-center mt-3">
+
+                <?php if (!$dispositivoExiste): ?>
+                    <a class="btn btn-secondary disabled" tabindex="-1" aria-disabled="true">Ações</a>
+                <?php else: ?>
+                    <a class="btn btn-primary" href="acoesVeiculos.php?id=<?= $id_veiculo ?>">Ações</a>
+                <?php endif; ?>
+
+                <button type="button" class="btn text-light" onclick="window.location.href='<?= $voltar_para ?>'">Voltar</button>
+            </div>
+        </div>
         <br>
 
     </main>
+    <script>
+        function atualizarStatus() {
+            fetch('statusveiculoajax.php?id=<?= $id_veiculo ?>')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('statusveiculo').innerHTML = data;
+                })
+                .catch(error => console.log('Erro ao atualizar:', error));
+        }
 
+        // Atualiza a cada 3 segundos (3000 ms)
+        setInterval(atualizarStatus, 5000);
+    </script>
 </body>
 <script src="js/bootstrap.min.js"></script>
 

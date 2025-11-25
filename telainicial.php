@@ -296,7 +296,9 @@ include("verifyRegister.php");
 
 
                 <?php if (empty($veiculos)): ?>
-                    <p class="text-white mt-3">Não há veículo registrados.</p>
+                    <div class="w-100 bg-secondary p-2" style="border-radius: 10px;">
+                        <p class="text-white mt-3">Não há veículo registrados.</p>
+                    </div>
                 <?php else: ?>
                     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
 
